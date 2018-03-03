@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>弹框遮罩淡入淡出</title>
+		<style type="text/css">
+			.phone {
+				width: 200px;
+				height: 350px;
+				border-radius: 10px;
+				border: 1px solid #666;
+				background: url(../img/mycode.png) no-repeat center 20%/contain;
+				margin: 50px;
+				position: relative;
+				overflow: hidden;
+			}
+			
+			.btn {
+				width: 100px;
+				line-height: 40px;
+				color: #fff;
+				background-color: #0cc;
+				margin: 280px auto 0;
+				text-align: center;
+				border-radius: 5px;
+				cursor: pointer;
+				transition: 0.2s;
+			}
+			
+			.btn:active {
+				filter: brightness(0.9);
+			}
+			
+			.shade {
+				width: 100%;
+				height: 100%;
+				border-radius: 10px;
+				background-color: rgba(0, 0, 0, 0.5);
+				transition: opacity 0.5s ease-out, transform 0s 0.5s;
+				transform: translateX(100%);
+				opacity: 0.1;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			
+			.shade-active {
+				transition: opacity 0.5s ease-out, transform 0s 0s;
+				transform: translateX(0);
+				opacity: 1;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="phone">
+			<div class="btn">确定</div>
+			<div class="shade"></div>
+		</div>
+
+		<script type="text/javascript">
+			const $btn = document.querySelector('.btn'),
+				$shade = document.querySelector('.shade');
+
+			$btn.addEventListener('click', function() {
+				$shade.classList.add('shade-active');
+			});
+
+			$shade.addEventListener('click', function() {
+				this.classList.remove('shade-active');
+			});
+		</script>
+	</body>
+
+</html>

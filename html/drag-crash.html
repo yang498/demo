@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>拖动碰撞</title>
+		<style type="text/css">
+			html,
+			body {
+				height: 100%;
+				margin: 0;
+			}
+			
+			.center {
+				width: 200px;
+				height: 200px;
+				background-color: #0ee;
+				border-radius: 10px;
+				transition: 0.2s;
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				margin: auto;
+			}
+			
+			.box {
+				width: 60px;
+				height: 60px;
+				background-color: #f08;
+				border-radius: 5px;
+				cursor: move;
+			}
+			
+			.active {
+				box-shadow: 0 0 20px rgba(255, 0, 125, 0.5);
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="center"></div>
+		<div class="box" style="transform: translate(0,0);"></div>
+		<script src="../common/vconsole.2.5.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			const device = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"],
+				mobile = device.some(item => navigator.userAgent.indexOf(item) > 0),
+				down = mobile ? 'touchstart' : 'mousedown',
+				up = mobile ? 'touchend' : 'mouseup',
+				move = mobile ? 'touchmove' : 'mousemove',
+				leave = mobile ? 'touchcancel' : 'mouseleave',
+				$body = $('body'),
+				$cen = $('.center'),
+				$box = $('.box'),
+				disW = $body.width() - $box.width(),
+				disH = $body.height() - $box.height(),
+				cenRect = $cen[0].getBoundingClientRect();
+
+			let boxRect,
+				transform,
+				isDrag = false,
+				x, y;
+
+			$box.on(down, function(e) {
+				isDrag = true;
+				transform = this.style.transform.replace(/translate\(|\)|px|\s/g, '').split(',');
+				x = mobile ? e.changedTouches[0].pageX : e.pageX - transform[0];
+				y = mobile ? e.changedTouches[0].pageY : e.pageY - transform[1];
+			}).on(up, function() {
+				isDrag = false;
+			});
+			$body.on(move, function(e) {
+				e.preventDefault();
+				if(isDrag) {
+					$box.css('transform', `translate(${Math.min(Math.max(0, (mobile?e.changedTouches[0].pageX:e.pageX) - x), disW)}px, ${Math.min(Math.max(0, (mobile?e.changedTouches[0].pageY:e.pageY) - y), disH)}px)`);
+					boxRect = $box[0].getBoundingClientRect();
+					(boxRect.right >= cenRect.left && boxRect.bottom >= cenRect.top && boxRect.left <= cenRect.right && boxRect.top <= cenRect.bottom) ? $cen.addClass('active'): $cen.removeClass('active');
+				}
+			}).on(leave, function() {
+				isDrag = false;
+			});
+		</script>
+	</body>
+
+</html>

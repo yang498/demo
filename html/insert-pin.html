@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>见缝插针</title>
+		<style type="text/css">
+			body {
+				height: 100%;
+			}
+			
+			.corange {
+				background-color: #f80 !important;
+			}
+			
+			.cyellow {
+				background-color: #ee0 !important;
+			}
+			
+			.cgreen {
+				background-color: #0e0 !important;
+			}
+			
+			.ccyan {
+				background-color: #0ee !important;
+			}
+			
+			.cblue {
+				background-color: #08f !important;
+			}
+			
+			.cviolet {
+				background-color: #80f !important;
+			}
+			
+			.cpink {
+				background-color: #f08 !important;
+			}
+			
+			.target {
+				width: 180px;
+				height: 180px;
+				margin: 150px auto 200px;
+				position: relative;
+				text-align: center;
+			}
+			
+			.target.fail {
+				animation: big 0.5s linear;
+			}
+			
+			.center {
+				line-height: 180px;
+				border-radius: 50%;
+				background-color: #f08;
+				color: #fff;
+				font-size: 32px;
+				font-weight: bold;
+			}
+			
+			.dial {
+				width: 100%;
+				height: 100%;
+				animation: run 10s linear infinite;
+				position: absolute;
+				top: 0;
+				z-index: -1;
+			}
+			
+			.dial>div {
+				width: 20px;
+				height: 200px;
+				position: absolute;
+				left: 50%;
+				bottom: 50%;
+				margin-left: -10px;
+				transform-origin: center bottom;
+			}
+			
+			.dial>div i {
+				display: block;
+				width: 20px;
+				height: 20px;
+				border-radius: 50%;
+				background-color: #f00;
+				color: #fff;
+				line-height: 20px;
+				font-style: normal;
+				transform-origin: center 12px;
+				transform: rotate(180deg);
+			}
+			
+			.dial>div span {
+				display: block;
+				width: 2px;
+				height: 100%;
+				background-color: #f00;
+				margin: 0 auto;
+			}
+			
+			.dial>div:nth-child(2) {
+				transform: rotate(120deg);
+			}
+			
+			.dial>div:nth-child(3) {
+				transform: rotate(240deg);
+			}
+			
+			.ammo {
+				width: 20px;
+				height: 20px;
+				background-color: #08f;
+				border-radius: 50%;
+				margin: 5px auto;
+				color: #fff;
+				text-align: center;
+				line-height: 20px;
+				transition: 0.3s linear;
+			}
+			
+			@keyframes run {
+				to {
+					transform: rotate(360deg);
+				}
+			}
+			
+			@keyframes big {
+				50% {
+					transform: scale(1.2);
+				}
+				to {
+					transform: scale(1);
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="target">
+			<!--中间数字-->
+			<div class="center">6</div>
+			<!--转盘-->
+			<div class="dial">
+				<!--已有目标-->
+				<div><i></i><span></span></div>
+				<div><i></i><span></span></div>
+				<div><i></i><span></span></div>
+			</div>
+		</div>
+
+		<!--弹药-->
+		<div class="ammos">
+			<div class="ammo corange" data-color="corange"></div>
+			<div class="ammo cyellow" data-color="cyellow"></div>
+			<div class="ammo cgreen" data-color="cgreen"></div>
+			<div class="ammo ccyan" data-color="ccyan"></div>
+			<div class="ammo cblue" data-color="cblue"></div>
+			<div class="ammo cviolet" data-color="cviolet"></div>
+		</div>
+
+		<script src="../common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			const [$body, $target, $cen, $dial, $ammo] = [$('body'), $('.target'), $('.center'), $('.dial'), $('.ammo')];
+			let [TOP, isCrash, deg] = [$cen.offset().top + $cen.height(), false];
+			const getDeg = deg => {
+					let aa = Math.round(180 * Math.asin(deg[0]) / Math.PI),
+						bb = Math.round(180 * Math.acos(deg[1]) / Math.PI),
+						cc = Math.round(180 * Math.asin(deg[2]) / Math.PI),
+						dd = Math.round(180 * Math.acos(deg[3]) / Math.PI),
+						rodeg = 0;
+					if(aa == bb || -aa == bb) {
+						rodeg = dd;
+					} else if(-aa + bb == 180) {
+						rodeg = 180 + cc;
+					} else if(aa + bb == 180) {
+						rodeg = 360 - cc || 360 - dd;
+					}
+					return rodeg >= 360 ? 0 : rodeg;
+				},
+				again = () => {
+					alert('再来一次');
+					location.reload();
+				},
+				crash = () => {
+					var lastRect = $('.dial i:last')[0].getBoundingClientRect();
+					$('.dial i:not(:last)').each(function(index) {
+						var itemRect = $(this)[0].getBoundingClientRect();
+						if(itemRect.top - TOP > 0 && lastRect.right >= itemRect.left && lastRect.left <= itemRect.right) {
+							$dial.css('animation-play-state', 'paused');
+							$target.addClass('fail');
+							setTimeout(again, 500);
+							isCrash = true;
+							return;
+						}
+					});
+				};
+
+			$ammo.each(function(i) {
+				$(this).html($ammo.length - i);
+			});
+
+			$body.on('click', function() {
+				$('.ammo:first').css('transform', 'translateY(-100px)').on('transitionend', function() {
+					$dial.append('<div><i>' + $(this).html() + '</i><span></span></div>');
+					deg = getDeg($dial.css('transform').slice(7).split(',', 4));
+					$('.dial>div:last-child').css('transform', 'rotate(' + (180 - deg) + 'deg)').children().addClass($(this).attr('data-color'));
+					$(this).remove();
+					$cen.html($('.ammo').length);
+					crash();
+					if($('.ammo').length === 0 && !isCrash) {
+						$dial.css('animation-duration', '0.5s');
+						setTimeout(again, 1000);
+					}
+				});
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>进度条</title>
+		<style type="text/css">
+			.div,
+			.gradient {
+				width: 200px;
+				height: 200px;
+				background-color: #ccc;
+				display: flex;
+				border-radius: 50%;
+				position: relative;
+				margin: 50px;
+				box-shadow: 0 0 0 6px #ccc;
+			}
+			
+			.right,
+			.back,
+			.left {
+				width: 50%;
+				height: 100%;
+				background-color: #0cf;
+				border-radius: 0 100px 100px 0;
+				transform-origin: left;
+				position: absolute;
+				right: 0;
+			}
+			
+			.back {
+				background-color: #ccc;
+				transition: 0.5s linear;
+			}
+			
+			.left {
+				opacity: 0;
+				transition: transform 0.5s linear 0.5s, opacity 0s linear 0.5s;
+			}
+			
+			.center {
+				width: 130px;
+				height: 130px;
+				border-radius: 50%;
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				margin: auto;
+				background-color: #fff;
+				box-shadow: 0 0 0 6px #ccc;
+				text-align: center;
+				line-height: 130px;
+				font-size: 30px;
+			}
+			
+			.div::before,
+			.after,
+			.gradient::before {
+				content: '';
+				width: 30px;
+				height: 30px;
+				border-radius: 50%;
+				background-color: #0cf;
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				margin: auto;
+				transform-origin: center 100px;
+				z-index: 1;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- 多个半圆div旋转 -->
+		<div class="div">
+			<div class="right"></div>
+			<div class="back"></div>
+			<div class="left"></div>
+			<!-- 数字 -->
+			<div class="center"></div>
+			<!-- 终点圆形，因为js获取不了伪元素所以改成div，因为是两个div所以过渡无法同步 -->
+			<div class="after"></div>
+		</div>
+
+		<!-- 渐变旋转 (deg,color pro,color pro),层级反过来,越后越低,因为是background-image所以图片无法css过渡,要么用js递归过渡 -->
+		<div class="gradient">
+			<div class="center"></div>
+			<div class="after"></div>
+		</div>
+
+		<script src="../common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			let pro = 85;
+			pro = Math.min(100, Math.max(0, pro));
+			
+			$('.back').css('transform', 'rotate(' + (pro < 50 ? 360 * pro / 100 : 180) + 'deg)');
+			$('.left').css({
+				'transform': 'rotate(' + (pro > 50 ? 360 * (pro - 50) / 100 : 0) + 'deg)',
+				'opacity': pro > 50 ? 1 : 0
+			});
+
+			$('.after').css({
+				'transform': 'rotate(' + 360 * pro / 100 + 'deg)',
+				'transition': pro < 50 ? 0.5 : 1 + 's linear'
+			});
+
+			$('.center').html(pro + '%')
+
+			$('.gradient').css('background-image', 'linear-gradient(' + (360 * (pro > 50 ? pro - 50 : pro) / 100 + 90) + 'deg, transparent 50%, ' + (pro > 50 ? '#0cf' : '#ccc') + ' 50%),linear-gradient(90deg, transparent 50%, #0cf 50%)')
+		</script>
+	</body>
+
+</html>

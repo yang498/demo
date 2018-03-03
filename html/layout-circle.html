@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>圆形菜单布局</title>
+		<style type="text/css">
+			.box {
+				width: 250px;
+				height: 250px;
+				position: relative;
+				border: 1px dashed #f80;
+				margin: 100px;
+				text-align: center;
+				color: #fff;
+			}
+			
+			.center {
+				width: 100px;
+				height: 100px;
+				border-radius: 50%;
+				background-color: #f00;
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				margin: auto;
+			}
+			
+			.item {
+				width: 50px;
+				height: 50px;
+				line-height: 50px;
+				background-color: #f08;
+				border-radius: 50%;
+				position: absolute;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="box">
+			<div class="center"></div>
+			<div class="item">1</div>
+			<div class="item">2</div>
+			<div class="item">3</div>
+			<div class="item">4</div>
+			<div class="item">5</div>
+			<div class="item">6</div>
+		</div>
+
+		<script type="text/javascript">
+			let item = document.querySelectorAll('.item'),
+				radius = 125,	// 父容器半径
+				half = 25,	// 子元素半径
+				deg,	// 以父容器为中心点旋转的角度
+				x, y;	// 定位点
+			for(let i = 0; i < item.length; i++) {
+				deg = (60 * i - 30) * (Math.PI / 180);
+				x = radius * Math.cos(deg) + radius - half;
+				y = radius * Math.sin(deg) + radius - half;
+				item[i].style.cssText = `top:${y}px;left:${x}px`;
+			}
+		</script>
+	</body>
+
+</html>

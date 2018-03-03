@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>点击背景扩散</title>
+		<style type="text/css">
+			.demo {
+				height: 100px;
+				line-height: 100px;
+				border-bottom: 1px solid #ccc;
+				position: relative;
+				overflow: hidden;
+				transition: 0.2s linear;
+			}
+			
+			.demo:hover {
+				background-color: #eee;
+			}
+			
+			.demo:hover .bg {
+				background-color: #eee;
+			}
+			
+			.demo:active .bg {
+				background-color: #ccc;
+				box-shadow: 0 0 0 260px #ccc;
+			}
+			
+			.bg {
+				width: 2px;
+				height: 2px;
+				border-radius: 50%;
+				transition: 1s linear;
+				transition-property: transform, background-color, box-shadow;
+				position: absolute;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="demo">
+			<div class="bg"></div>
+		</div>
+		<div class="demo">
+			<div class="bg"></div>
+		</div>
+		<div class="demo">
+			<div class="bg"></div>
+		</div>
+
+		<script src="../common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			const $demo = $('.demo')
+			const demoW = $demo.width()
+			const demoH = $demo.height()
+			const bgRadius = Math.max(demoW, demoH) / 2
+			let x, y
+
+			// 单向过渡，二次点击
+			$demo.on('mousedown', function(e) {
+				console.log(e)
+				x = e.offsetX - demoW / 2;
+				y = e.offsetY - demoH / 2;
+				console.log(x,y)
+				$(this).find('.bg').css({
+					'top': e.offsetY + 'px',
+					'left': e.offsetX + 'px',
+					'transform': 'translate(0, 0)'
+				}).css('transform', `translate(${-x}px, ${-y}px)`);
+			});
+		</script>
+	</body>
+
+</html>

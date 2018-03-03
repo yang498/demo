@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>单击模拟双击</title>
+		<style type="text/css">
+			.demo {
+				width: 200px;
+				height: 200px;
+				background-color: #f08;
+				margin: 50px;
+				cursor: pointer;
+			}
+			
+			.active {
+				background-color: #0cc;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="demo"></div>
+		<script type="text/javascript">
+			let $demo = document.querySelector('.demo'),
+				timer = null,
+				flag = false;
+
+			$demo.addEventListener('click', function() {
+				if(flag) {
+					this.classList.toggle('active');
+					flag = false;
+				} else {
+					flag = true;
+					clearTimeout(timer);
+					timer = setTimeout(function() {
+						flag = false;
+					}, 300);
+				}
+			})
+		</script>
+	</body>
+
+</html>

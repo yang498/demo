@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>原型链</title>
+	</head>
+
+	<body>
+		<script type="text/javascript">
+			// 通用判断数据类型：Object.prototype.toString.call(arguments)	[object object]
+			// 基本类型（typeof验证）：undefined, number, string, boolean，引用类型（instanceof）：object，array，function，null
+			// 一切都是对象，对象都是通过函数创建的
+			
+			// 这是一种快捷方式的语法糖
+			//var obj = { a: 1, b: 2 }
+			//var arr = [1, 2, 3]
+			// 本质是
+			//var obj1 = new Object({ a: 1, b: 2 })
+			//var arr1 = new Array([1, 2, 3])
+			//console.log(obj)
+			
+			// 每个函数都有个属性叫做prototype的对象，也就是原型，可以定义属性或方法让它的实例对象共享，可以达到节省内存的作用，默认有个constructor的属性，指向这个函数本身
+			var obj = {}
+			// obj.prototype: { constructor: obj }
+			// 比如Object
+			//Object.prototype: {
+				//constructor: Object,
+				//length: 1,
+				//name: 'Object',
+				//hasOwnProperty: function(){},
+				//isPrototypeOf: function(){},
+				//toString: function(){},
+				//valueOf: function(){}
+			//}
+			
+			// 每个对象都有一个__proto__属性，也就是原型链，指向创建该对象的函数的prototype，比如obj.__proto__=== Object.prototype，原型链最终指向null
+			//obj.prototype: {
+				//constructor: obj
+				//__proto__: {
+					//constructor: Object,
+					//length: 1,
+					//name: 'Object',
+					//hasOwnProperty: function(){},
+					//isPrototypeOf: function(){},
+					//toString: function(){},
+					//valueOf: function(){}
+				//}
+			//}
+			
+			// 因为对象是由函数创建的，所以Object.__proto__ === Function.prototype，而Function是由自身所创建的
+			// 因为Function.prototype指向的对象也是一个普通的被Object创建的对象，所以Function.__proto__ === Object.prototype
+			// instanceof判断：A(实例对象) instanceof B(原型对象)，从A的__proto__一直往下找，同时从B的prototype一直往上找，如果重合返回true否则false
+			//Object instanceof Function	//true
+			//Object instanceof Object	//true
+			//Function instanceof Function	//true
+			//Function instanceof Object	//true
+			
+			// 访问一个对象的属性时，先在基本属性中查找，如果没有，再沿着__proto__这条链向上找，这就是原型链
+			//function Foo(){}
+			//Foo.prototype.a = 100
+			//var f1 = new Foo()
+			//f1.a	// 100
+			
+			// hasOwnProperty：判断实例的某个属性是自带的还是继承自原型对象的属性，特别是在for in循环中也会循环原型的属性，可以用这个判断：f1.hasOwnProperty('a')
+			// 而f1也没有hasOwnProperty这个方法，所以也可以看出是顺着原型链找到的Object.hasOwnProperty()，其他的length，arguments，call，apply等方法也是如此
+
+			// 页面加载的准备工作：对变量、函数表达式进行声明，默认赋值为undefined，对this在不同的作用域中赋予对应的变量，对函数声明进行赋值
+			// 这些准备工作也就是执行上下文，在执行代码之前，把将要用到的所有的变量都事先拿出来，有的直接赋值了，有的先用undefined占个空
+			//console.log(f1)	// function f1(){}
+			//function f1(){}
+			//console.log(f2)	// undefined
+			//var f2 = function(){}
+			
+			// 函数在定义的时候（不是调用的时候），就已经确定了函数体内部自由变量的作用域
+			//var a = 10;
+			//function f1(){console.log(a)}
+			//function f2(){var a = 20; f1()}
+			//f2() //10
+			
+			// this的4种情况，是在函数真正被调用执行的时候确定的，函数定义的时候确定不了
+			// 构造函数和整个原型链中都是指向自己，普通函数指向window
+			function Foo(){
+				this.a = 10
+				console.log(this)
+				console.log(this.a)
+			}
+			var f1 = new Foo();	//Foo 10
+			Foo();	// window
+			// 作为对象的一个属性被调用时指向该对象，否则还是个普通函数指向window
+			var obj = {
+				a: 10,
+				fn: function(){
+					console.log(this)
+					console.log(this.a)
+				}
+			}
+			obj.fn()	// obj 10
+			var fn1 = obj.fn	
+			fn1()	// window
+			// call，apply，bind，指向传入的参数
+			
+			var obj1 = { a:100 }
+			var obj1Fn = function(){
+				console.log(this)
+				console.log(this.a)
+			}
+			obj1Fn.call(obj1)
+			obj1Fn.apply(obj1)
+			obj1Fn.bind(obj1)
+			obj1Fn()//???
+			
+			// 注意在对象内部定义还是一个普通的函数，所以还是window
+			var obj2 = {
+				a: 10,
+				fn: function(){
+					function fn3(){
+						console.log(this)
+						console.log(this.a)
+					}
+					fn3()
+				}
+			}
+			obj2.fn()	//window
+			
+			// 执行jQuery.extend指向jQuery，执行jQuery.fn.extend指向jQuery.fn
+			// jQuery.extend = jQuery.fn.extend = function(){}
+			
+			// js没有块级作用域，即{}中间的语句，比如if语句和for语句，只分函数内外
+			
+			function Mother() {}
+			Mother.prototype = {
+				age: 18,
+				home: ['Beijing', 'Shanghai']
+			};
+			function Person(name) {
+				this.name = name;
+			}
+			Person.prototype = new Mother();
+
+			var p1 = new Person('Jack');
+			var p2 = new Person('Mark');
+
+			p1.age = 20;
+			p1.home[0] = 'Shenzhen';
+			p1.home = ['Hangzhou', 'Guangzhou'];
+			//console.log(Mother.prototype)
+		</script>
+	</body>
+
+</html>

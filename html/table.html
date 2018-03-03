@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>表格</title>
+	</head>
+
+	<body>
+		<input type="button" value="添加" class="btn btn-add" />
+		<input type="button" value="删除" class="btn btn-add" />
+		<input type="button" value="取消" class="btn btn-add hide" />
+		<input type="text" placeholder="请搜索" class="form-control ti_search" />
+		<button class="btn btn-success t_search">搜索</button>
+		<!--select排序：默认选中按时间，名字，只看男，只看女-->
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th class="t_choice"><button class="btn btn-primary t_all">全选</button></th>
+					<th>ID</th>
+					<th>姓名</th>
+					<th>性别</th>
+					<th>年龄</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="t_choice"><i class="glyphicon glyphicon-unchecked"></i></td>
+					<td class="t_id">1</td>
+					<td class="t_name">路飞</td>
+					<td class="t_sex">男</td>
+					<td class="t_age">20</td>
+					<td class="t_operate">
+						<button class="btn btn-success t_edit">编辑</button>
+						<button class="btn btn-danger t_del">删除</button>
+					</td>
+				</tr>
+				<tr>
+					<td class="t_choice"><i class="glyphicon glyphicon-unchecked"></i></td>
+					<td class="t_id">2</td>
+					<td class="t_name">鸣人</td>
+					<td class="t_sex">男</td>
+					<td class="t_age">18</td>
+					<td class="t_operate">
+						<button class="btn btn-success t_edit">编辑</button>
+						<button class="btn btn-danger t_del">删除</button>
+					</td>
+				</tr>
+				<tr>
+					<td class="t_choice"><i class="glyphicon glyphicon-unchecked"></i></td>
+					<td class="t_id">3</td>
+					<td class="t_name">井上</td>
+					<td class="t_sex">女</td>
+					<td class="t_age">19</td>
+					<td class="t_operate">
+						<button class="btn btn-success t_edit">编辑</button>
+						<button class="btn btn-danger t_del">删除</button>
+					</td>
+				</tr>
+				<tr>
+					<td class="t_choice"><i class="glyphicon glyphicon-unchecked"></i></td>
+					<td class="t_id">4</td>
+					<td class="t_name">夜神</td>
+					<td class="t_sex">女</td>
+					<td class="t_age">22</td>
+					<td class="t_operate">
+						<button class="btn btn-success t_edit">编辑</button>
+						<button class="btn btn-danger t_del">删除</button>
+					</td>
+				</tr>
+				<tr>
+					<td class="t_choice"><i class="glyphicon glyphicon-unchecked"></i></td>
+					<td class="t_id">5</td>
+					<td class="t_name">一护</td>
+					<td class="t_sex">男</td>
+					<td class="t_age">21</td>
+					<td class="t_operate">
+						<button class="btn btn-success t_edit">编辑</button>
+						<button class="btn btn-danger t_del">删除</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+
+</html>

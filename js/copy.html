@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>浅拷贝和深拷贝</title>
+	</head>
+
+	<body>
+		<script src="../common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			// 浅拷贝：一维数组或对象改变互不影响，多维会一改全改，例如concat()
+			// 深拷贝：两者完全独立互不影响，例如JSON.parse(JSON.stringify())
+			// JSON能正确处理的对象只有 Number, String, Boolean, Array, 扁平对象，即那些能够被 json 直接表示的数据结构
+			/*对于字符串类型，浅复制是对值的复制
+			 * 对于对象来说，浅复制是对对象地址的复制，并没有开辟新的栈，也就是复制的结果是两个对象指向同一个地址，
+			 * 修改其中一个对象的属性，则另一个对象的属性也会改变，
+			 * 而深复制则是开辟新的栈，两个对象对应两个不同的地址，修改一个对象的属性，不会改变另一个对象的属性*/
+			// 要实现深拷贝，那就递归调用浅拷贝
+
+			// 一个参数
+			const deepCopy = (p, c) => {
+				c = c || {}; // 开始是个空对象
+
+				// 如果支持JSON
+				if(JSON) {
+					c = JSON.parse(JSON.stringify(p));
+				} else {
+					for(let i in p) {
+						// 如果子元素是个对象或数组就继续深入它循环拷贝
+						if(typeof p[i] === 'object') {　　
+							c[i] = p[i].constructor === Array ? [] : {};
+							deepCopy(p[i], c[i]);
+						} else { // 如果不是直接赋值
+							c[i] = p[i];
+						}　　　　
+					}　　　　
+				}
+				return c;　　
+			};
+
+			// jQuery的extend，不限参数，将第一个参数之后的参数合并到第一个参数中
+			// 浅拷贝：如果第一个参数有的属性后面也有那就覆盖，后面没有就添加，不管子属性是不是个对象
+			// 深拷贝：判断子属性如果是个对象就递归浅拷贝，会改变第一个参数，可以用空对象
+			const extend = (...params) => {
+				let deep = false, // 是深拷贝还是浅拷贝
+					target = params[0] || {}, // 合并的目标对象
+					i = 1, // 要被合并的参数起始位置
+					name, // 代表每个要合并的参数的每个key
+					src, // target[name]
+					copy, // params[i][name]
+					clone; // 当要合并的参数是对象或数组的时候，为子目标对象
+
+				// 如果第一个参数是个Boolean值，整体位置向后退一位
+				if(typeof target === 'boolean') {
+					deep = target;
+					target = params[i] || {};
+					i++;
+				}
+
+				// 如果target既不是对象也不是函数就赋值为空对象，可能是字符串或数字这类不能添加属性的类型
+				typeof target !== 'object' && typeof target !== 'function' && (target = {});
+
+				// 如果只有一个参数对象，则扩展到jQuery对象上，比如属性或函数
+				if(i === params.length) {
+					target = this;
+					i--;
+				}
+
+				// 循环要合并的参数
+				for(; i < params.length; i++) {
+					if(params[i] != null) {		// 确保值存在
+						for(name in params[i]) { 	// 对每个参数进行再循环
+							src = target[name];
+							copy = params[i][name];
+							if(target === copy) continue; 	// 防止无限循环，比如2个对象属性互等进行拷贝
+
+							// 如果是深拷贝并且合并的对象是个对象或数组
+							if(deep && copy && typeof copy === 'object') {
+								if(Array.isArray(copy)) {
+									clone = src && Array.isArray(src) ? src : [];
+								} else {
+									clone = src && typeof src === 'object' ? src : {};
+								}
+								target[name] = extend(deep, clone, copy); 	// 继续拷贝
+							} else if(copy !== undefined) { 	// 如果元素不是个未定义的值就直接赋值
+								target[name] = copy;
+							}
+						}
+					}
+				}
+				return target;
+			};
+
+			const obj = {
+				name: 'yy',
+				age: '21',
+				likeNum: [1, 2, 3],
+				other: {
+					gender: 'man',
+					love: 'skateboard'
+				}
+			};
+
+			let newObj = deepCopy(obj);
+			newObj.likeNum.push(6);
+			newObj.other.movie = 'tokey hot'
+
+			console.log(obj)
+			console.log(newObj)
+			console.log(extend(true, {}, obj, {likeNum: 9, other: {game: 'dnf'}}))
+		</script>
+	</body>
+
+</html>

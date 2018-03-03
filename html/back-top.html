@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>回到顶部</title>
+		<style type="text/css">
+			.web {
+				width: 100%;
+				height: 2100px;
+				position: relative;
+				text-align: center;
+			}
+			
+			nav {
+				width: 500px;
+				line-height: 50px;
+				background-color: #08f;
+				color: #fff;
+				border-radius: 5px;
+				margin: 100px auto;
+				transition: 2s;
+				position: sticky;
+				top: 20px;
+			}
+			
+			.text {
+				line-height: 300px;
+				font-size: 50px;
+			}
+			
+			.top {
+				width: 150px;
+				height: 250px;
+				position: fixed;
+				right: 5%;
+				bottom: 5%;
+				background: url(../img/rocket.png) no-repeat;
+				transition: opacity 0.5s ease-out, transform 0s 0.5s;
+				transform: translateX(1000px);
+				opacity: 0;
+			}
+			
+			.top:hover {
+				background-position-x: -150px;
+			}
+			
+			.active {
+				transition: opacity 0.5s ease-out, transform 0s 0s;
+				transform: translateX(0);
+				opacity: 1;
+			}
+			
+			.ing {
+				animation: fire 0.5s steps(4) infinite;
+			}
+			
+			@keyframes fire {
+				from { background-position-x: -300px; }
+				to { background-position-x: -900px; }
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="web">
+			<nav>导航栏</nav>
+			<div class="text">1</div>
+			<div class="text">2</div>
+			<div class="text">3</div>
+			<div class="text">4</div>
+			<div class="text">5</div>
+			<div class="text">6</div>
+			<div class="text">7</div>
+			<div class="top"></div>
+		</div>
+
+		<script src="../common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			let ing = true,
+				$top = $('.top'),
+				$html = $('html'),
+				$win = $(window);
+			$($win).scrollTop() > 500 ? $top.addClass('active') : $top.removeClass('active');
+			$win.on('scroll', function() {
+				ing && ($(this).scrollTop() > 500 ? $top.addClass('active') : $top.removeClass('active'));
+			});
+			$top.on('click', function() {
+				ing = false;
+				$(this).addClass('ing');
+				$html.animate({ scrollTop: 0 }, function() {
+					$top.animate({ bottom: '110%' }, 500, function() {
+						$(this).removeClass('ing active').on('transitionend',function(){
+							$(this).css('bottom', '5%')
+							ing = true;
+						});
+					});
+				});
+			});
+		</script>
+	</body>
+
+</html>

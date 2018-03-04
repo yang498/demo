@@ -36,7 +36,7 @@
 					res.status ? console.log(item) : (mapCityLngLat[item] = [res.result.location.lng, res.result.location.lat])
 					if(item === mapCity[mapCity.length - 1]){
 						setTimeout(() => {
-							$('a')[0].href = URL.createObjectURL(new Blob(['const mapCityLngLat = ' + JSON.stringify(mapCityLngLat)]))
+							$('a')[0].href = URL.createObjectURL(new Blob(['var mapCityLngLat = ' + JSON.stringify(mapCityLngLat)]))
 							console.log('ok')
 						}, 666)
 					}

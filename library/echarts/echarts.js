@@ -337,7 +337,10 @@ echarts.init(document.getElementById('china')).setOption({
 		left: 50,
 		itemWidth: 40,
 		itemHeight: 20,
-		textStyle: { fontSize: 18 },
+		textStyle: {
+			fontSize: 18,
+			color: '#fff'
+		},
 		//selected: { '城市气泡': false },
     	data: ['城市气泡']
 	},

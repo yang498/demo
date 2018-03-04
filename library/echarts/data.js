@@ -178,3 +178,10 @@ for(let i = 0; i < excelPostData.length; i++) {
 		}
 	}
 }
+
+// 东西南北测试数据
+let proESWNTest = []
+for(let item of proEast) proESWNTest.push({ name: item, value: 0 })
+for(let item of proSouth) proESWNTest.push({ name: item, value: 50 })
+for(let item of proWest) proESWNTest.push({ name: item, value: 100 })
+for(let item of proNorth) proESWNTest.push({ name: item, value: 150 })

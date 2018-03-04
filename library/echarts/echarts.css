@@ -8,6 +8,10 @@
 #china, #bmap {
 	width: 1200px;
 }
+#china2 {
+	width: 100%;
+	height: 800px;
+}
 .anchorBL {
 	display:none;
 }

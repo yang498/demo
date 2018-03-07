@@ -428,22 +428,17 @@ echarts.init(document.getElementById('china')).setOption({
 //	geo: {	// 地理坐标系
 //    	map: 'china',	// 中国地图，先引入js或json，还有世界地图
 //    	roam: true,		//是否开启缩放
-//    	//label: { show: true, color: '#fff' },	// 省名
 //    	itemStyle: { color: '#444', borderColor: '#222' },
 //	},
 //	visualMap: {	// 视觉映射组件，显示控制范围
 //		type: 'continuous', // 连续型，还有分段范围型
 //		min: 0,       		// 值域最小值，必须参数
 //		max: 150,			// 值域最大值，必须参数
-//		left: 20,
-//		bottom: 10,
 //		seriesIndex: 1,		// 指定关联哪个系列的数据
-//		calculable: true,	// 是否显示拖拽手柄
-//		textStyle: { color: '#fff' },	// 值域控件的文本颜色
 //		inRange: { color: ['#0c0', '#08f', '#f90', '#f30'] }	// 指定数值从低到高时的颜色变化
 // 	},
 //	series: [
-//		{ type: 'scatter', coordinateSystem: 'geo',	 data: [] },
+//		{ type: 'scatter', coordinateSystem: 'geo', symbol: 'pin', data: [{name:'北京',value:['116.395645', '39.929986', 100]}] },
 //		{ type: 'map', geoIndex: 0, data: proESWNTest }
 //	]
 //})

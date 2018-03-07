@@ -17,28 +17,41 @@
 				text-align: center;
 				background-color: #08f;
 			}
+			li {
+				font-size: 18px;
+				padding: 20px 0 20px 200px;
+			}
+			li:nth-child(2n) {
+				background-color: #eee;
+			}
 		</style>
 	</head>
 
 	<body>
 		<!--所有城市经纬度，格式为：{'北京':[34,12],'上海':[34,12],'深圳':[34,12]}-->
 		<a href="#" download="mapCityLngLat.js">下载</a>
+		<ul><li>直辖市：</li></ul>
 		<script src="excel.js" type="text/javascript" charset="utf-8"></script>
 		<script src="bmapCityCenter.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			// 河南济源1997年和2005年、吉林梅河口2013年11月、江西丰城2000年8月升级
+			console.log(bmapCityCenter)
 			let mapCity = ['济源', '梅河口', '丰城']
 			let mapCityExcel = ['北京', '天津', '上海', '重庆']
 			let mapCityLngLat = {'济源':[112.40383,35.093893], '梅河口':[125.723516,42.54265], '丰城':[115.823404,28.111515]}
 			for(let item of bmapCityCenter.municipalities) {
 				mapCity.push(item.n)
 				mapCityLngLat[item.n] = item.g.replace(/\|\d*/, '').split(',')
+				document.querySelector('li').innerHTML += item.n + ' '
 			}
 			for(let obj of bmapCityCenter.provinces) {
+				let city = ''
 				for(let item of obj.cities) {
 					mapCity.push(item.n)
 					mapCityLngLat[item.n] = item.g.replace(/\|\d*/, '').split(',')
+					city += item.n + ' '
 				}
+				document.querySelector('ul').innerHTML += '<li>' + obj.n + '：' + city + '</li>'
 			}
 			excel.split('\n').forEach((item) => {
 				let res = item.split(',')

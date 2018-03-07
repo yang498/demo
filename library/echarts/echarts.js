@@ -449,7 +449,7 @@ echarts.init(document.getElementById('bmap')).setOption({
 	visualMap: {
 		type: 'continuous',
 		min: 0,
-		max: 50,
+		max: 60,
 		left: 20,
 		bottom: 10,
 		calculable: true,

@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>搜索</title>
+		<link rel="shortcut icon" href="../img/love.png" />
 		<link rel="stylesheet" type="text/css" href="../common/reset.css"/>
 		<style type="text/css">
 			#cli_dialog_div {
@@ -45,7 +46,7 @@
 		</style>
 	</head>
 	<body>
-		<input type="search" id="search" placeholder="请输入" />
+		<input type="search" id="search" placeholder="请输入" results="5" pattern="../img/love.png"/>
 		<div><span>竞品：</span><span id="jingpin"></span></div>
 		<div><span>中介：</span><span id="zhongjie"></span></div>
 		<div><span>资源：</span><span id="ziyuan"></span></div>
@@ -60,6 +61,9 @@
 				const res = this.querySelectorAll(el)
 				return res.length === 1 ? res[0] : res
 		    }
+			HTMLElement.prototype.on = function(type, fn){
+				type.split(' ').forEach(item => this.addEventListener(item, fn))
+			}
 			
 			const jingpin = `车国、车镇、车团、车盾、车百惠、车源宝、车易购、车商红、
 					网车、惠买车、买好车、卖好车、要买车、宜买车、趣买车、易淘车、人人车、弹个车、
@@ -75,8 +79,8 @@
 			$('#ziyuan').innerText = ziyuan
 			$('#chuanxiao').innerText = chuanxiao
 			
-			$('#search').addEventListener('keyup', function(){
-				(this.value && jingpin.indexOf(this.value) >= 0) ? ($('#jingpin').innerHTML = jingpin.replace(new RegExp(this.value, 'g'), res => '<i>' + res + '</i>')) : ($('#jingpin').innerText = jingpin)
+			$('#search').on('input focus', function(){
+				$('#jingpin').innerHTML = this.value ? jingpin.replace(/\n/g, '<br/>').replace(new RegExp(this.value, 'g'), res => '<i>' + res + '</i>') : jingpin.replace(/\n/g, '<br/>')
 				$('#zhongjie').innerHTML = this.value ? zhongjie.replace(new RegExp(this.value, 'g'), res => '<i>' + res + '</i>') : zhongjie
 				$('#ziyuan').innerHTML = this.value ? ziyuan.replace(new RegExp(this.value, 'g'), res => '<i>' + res + '</i>') : ziyuan
 				$('#chuanxiao').innerHTML = this.value ? chuanxiao.replace(new RegExp(this.value, 'g'), res => '<i>' + res + '</i>') : chuanxiao

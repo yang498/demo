@@ -1,3 +1,125 @@
+const $ = function(el) {
+	const res = document.querySelectorAll(el)
+	return res.length === 1 ? res[0] : res
+}
+HTMLElement.prototype.fd = function(el) {
+	const res = this.querySelectorAll(el)
+	return res.length === 1 ? res[0] : res
+}
+HTMLElement.prototype.on = function(type, fn) {
+	/\s/.test(type) ? type.split(' ').forEach(item => this.addEventListener(item, fn)) : this.addEventListener(type, fn)
+	return this
+}
+HTMLElement.prototype.index = function() {
+	for(let i = 0; i < this.parentNode.children.length; i++) if(this.parentNode.children[i] === this) return i
+}
+
+const data = [
+	{ id: 1, name: '大娃', sex: 0, age: 20},
+	{ id: 2, name: '二娃', sex: 1, age: 19},
+	{ id: 3, name: '三娃', sex: 0, age: 21},
+	{ id: 4, name: '四娃', sex: 1, age: 18},
+	{ id: 5, name: '五娃', sex: 0, age: 22},
+	{ id: 6, name: '六娃', sex: 1, age: 17},
+	{ id: 7, name: '七娃', sex: 0, age: 23}
+]
+
+data.forEach((item, index) => {
+	$('tbody').innerHTML += `<tr>
+		<td class="id">${item.id}</td>
+		<td class="name" onclick="editName(this,${index})">${item.name}</td>
+		<td class="sex" onclick="editSex(this,${index})">${item.sex ? '女' : '男'}</td>
+		<td class="age" onclick="editAge(this,${index})">${item.age}</td>
+		<td class="del" onclick="delTr(this)"><i class="iconfont icon-del"></i></td>
+	</tr>`
+})
+
+// 只能输入数字
+const editNumber = function() {
+	this.value = this.value.replace(/[^\d]/, '')
+}
+
+// 每行末尾删除单行
+const delTr = function(item) {
+	confirm('确定删除吗？') && item.parentNode.remove()
+}
+
+// 双击可修改姓名、性别、年龄
+const editName =  function(item, index) {
+	item.innerHTML = `<input type="text" placeholder="${data[index].name}" maxlength="5" class="td-edit">`
+	$('.td-edit').focus()
+	$('.td-edit').value = data[index].name
+	$('.td-edit').on('blur', function(){
+		this.value && (data[index].name = this.value)
+		item.innerText = data[index].name
+	})
+}
+const editSex =  function(item, index) {
+	if(confirm('要修改性别吗？')) {
+		data[index].sex = !data[index].sex
+		item.innerText = data[index].sex ? '女' : '男'
+	}
+}
+const editAge =  function(item, index) {
+	item.innerHTML = `<input type="text" placeholder="${data[index].age}" maxlength="3" class="td-edit">`
+	$('.td-edit').focus()
+	$('.td-edit').value = data[index].age
+	$('.td-edit').on('input', editNumber).on('blur', function(){
+		this.value && (data[index].age = this.value)
+		item.innerText = data[index].age
+	})
+}
+
+// 增加一行
+$('tfoot').on('click', function(){
+	$('tbody').innerHTML += `<tr>
+		<td class="id"><input type="text" placeholder="ID" maxlength="4" class="td-edit td-number"></td>
+		<td class="name"><input type="text" placeholder="姓名" maxlength="5" class="td-edit"></td>
+		<td class="sex"><input type="radio" name="sex" value="0"/>男 <input type="radio" name="sex" value="1"/>女</td>
+		<td class="age"><input type="text" placeholder="年龄" maxlength="3" class="td-edit td-number"></td>
+		<td class="tr-done">完成</td>
+	</tr>`
+	for(let i = 0; i < $('.td-number').length; i++) $('.td-number')[i].on('input', editNumber)
+	$('.tr-done').on('blur', function(){
+		this.classList.remove('td-edit-fail')
+	}).on('click', function(){
+		let $td = this.parentNode.children
+		let isDone = true
+		for(let i = 0; i < $td.length; i++) {
+			if(/[013]/.test(i) && !$td[i].children[0].value){
+				$td[i].children[0].classList.add('td-edit-fail')
+				$td[i].children[0].focus()
+				isDone = false
+			}
+		}
+		if(!$td[2].children[0].checked && !$td[2].children[1].checked) {
+			$td[2].classList.add('td-edit-fail-td')
+			isDone = false
+		}
+		if(isDone) {
+			const item = {
+				id: $td[0].children[0].value,
+				name: $td[1].children[0].value,
+				sex: $td[2].children[0].checked ? 0 : 1,
+				age: $td[3].children[0].value,
+			}
+			data.push(item)
+			$('tbody tr:last-child').remove()
+			$('tbody').innerHTML += `<tr>
+				<td class="id">${item.id}</td>
+				<td class="name">${item.name}</td>
+				<td class="sex">${item.sex ? '女' : '男'}</td>
+				<td class="age">${item.age}</td>
+				<td class="del"><i class="iconfont icon-del"></i></td>
+			</tr>`
+			$('tbody tr:last-child .name').on('dblclick', editName(data.length - 1))
+			$('tbody tr:last-child .sex').on('dblclick', editSex(data.length - 1))
+			$('tbody tr:last-child .age').on('dblclick', editAge(data.length - 1))
+			$('tbody tr:last-child .del').on('click', delTr(data.length - 1))
+		}
+	})
+})
+
 let table = {
 	// 增加一行
 	add: function() {
@@ -14,25 +136,6 @@ let table = {
 				table.del();
 			}
 		});
-	},
-
-	// 删除一行
-	del: function() {
-		var btn = document.querySelectorAll('.t_del');
-		for(var i = 0; i < btn.length; i++) {
-			btn[i].addEventListener('click', function() {
-				var that = this.parentNode.parentNode;
-				$("#zdsc").modal();
-				document.querySelector('.m_zd').addEventListener('click', function() {
-					$("#zdsc").modal('hide');
-					that.parentNode.removeChild(that);
-					table.idsort();
-				});
-				document.querySelector('.m_sd').addEventListener('click', function() {
-					$("#zdsc").modal('hide');
-				});
-			});
-		}
 	},
 
 	// 删除多行
@@ -210,4 +313,4 @@ let table = {
 	// 超过10条分页
 
 	//		重置ID,编辑，动画效果，单独操作,毛玻璃效果，选择删除完该干什么，排序按照什么方式
-};
+}

@@ -7,47 +7,100 @@
 		<link rel="stylesheet" type="text/css" href="../common/reset.css"/>
 		<link rel="stylesheet" type="text/css" href="../common/iconfont/iconfont.css"/>
 		<style type="text/css">
-			table {
-				margin: 50px auto;
+			body {
+				background-color: #F5F5F5;
+			}
+			.table {
+				width: 500px;
+				overflow: hidden;
+				margin: 20px auto;
 				text-align: center;
 				border-radius: 5px;
-				border-collapse: collapse;
+				background-color: #fff;
+				border: 1px solid #ccc;
 			}
-			thead {
+			.table ul {
+				height: 40px;
+				display: flex;
+				overflow: hidden;
+			}
+			.table li {
+				width: 100px;
+				height: 40px;
+				line-height: 40px;
+				overflow: hidden;
+			}
+			.thead, .tbody ul, .add-input {
+				border-bottom: 1px solid #ccc;
+			}
+			.table li:not(:last-child) {
+				border-right: 1px solid #ccc;
+			}
+			/*thead----------------------------------------------*/
+			.thead {
 				color: #fff;
 				background-color: #41b883;
 			}
-			tbody tr:nth-child(2n) {
+			/*tbody----------------------------------------------*/
+			.tbody ul:nth-child(2n) {
 				background-color: #f5f5f5;
 			}
-			th, td {
-				height: 40px;
-				border: 1px solid #ccc;
-			}
-			th {
-				width: 100px;
+			.table .ul-del {
+				height: 0;
+				transition: ease-out 0.4s;
 			}
 			.del {
 				color: #f00;
 			}
-			.del, tfoot, .tr-done {
+			.del, .ul-done {
 				cursor: pointer;
-				transition-duration: 0.2s;
+				
 			}
-			.del:hover, tfoot:hover, .tr-done:hover {
+			.del:hover, .add-line:hover, .ul-done:hover {
 				background-color: #eee;
 			}
 			.del i {
 				font-size: 18px;
 			}
+			/*tfoot----------------------------------------------*/
+			.add-line {
+				display: block;
+				color: #41B883;
+				font-size: 24px;
+				line-height: 40px;
+				margin-top: -40px;
+				background-color: #fff;
+				position: relative;
+			}
+			.add-line.active {
+				margin: 0;
+				transition-duration: 0.4s;
+			}
+			.tfoot .sex {
+				display: flex;
+				cursor: pointer;
+			}
+			.sex-option {
+				flex: 1;
+			}
+			.sex-option + .sex-option {
+				border-left: 1px solid #ccc;
+			}
+			.sex-option.active {
+				border: 1px solid #41B883;
+			}
+			.tr-done {
+				color: #41B883;
+			}
+		</style>
+		<style type="text/css">
 			.td-edit {
-				width: 80px;
-				height: 25px;
-				padding: 0 3px;
-				font-size: 14px;
+				width: 100%;
+				height: 100%;
+				padding: 0 5px;
+				font-size: 16px;
 				text-align: center;
-				border-radius: 5px;
-				border: 1px solid #41b883;
+				border: none;
 			}
 			.td-edit-fail {
 				border: 1px solid #f00;
@@ -55,52 +108,44 @@
 			.td-edit-fail-td {
 				box-shadow: 0 0 0 1px #f00 inset;
 			}
-			tfoot {
-				color: #41B883;
-			}
-			tfoot .icon-add {
-				font-size: 20px;
-			}
-			.tr-done {
-				color: #41B883;
-			}
-			
-			.btn {
-				width: 80px;
-				line-height: 30px;
-				color: #fff;
-				border: none;
-				cursor: pointer;
-				border-radius: 5px;
-				background-color: #00b4fa;
-			}
 		</style>
 	</head>
 
 	<body>
-		<!--<input type="button" value="添加" class="btn btn-add" />
+		<!--
 		<input type="button" value="删除" class="btn btn-add" />
 		<input type="button" value="取消" class="btn btn-add hide" />
 		<input type="text" placeholder="请搜索" class="form-control ti_search" />
 		<button class="btn btn-success t_search">搜索</button>-->
 		<!--select排序：默认选中按时间，名字，只看男，只看女-->
-		<table>
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>姓名</th>
-					<th>性别</th>
-					<th>年龄</th>
-					<th>操作</th>
-				</tr>
-			</thead>
-			<tbody></tbody>
-			<tfoot>
-				<tr>
-					<td colspan="5"><i class="iconfont icon-add"></i></td>
-				</tr>
-			</tfoot>
-		</table>
+		<div class="table">
+			<ul class="thead">
+				<li>ID</li>
+				<li>姓名</li>
+				<li>性别</li>
+				<li>年龄</li>
+				<li>操作</li>
+			</ul>
+			<div class="tbody"></div>
+			<div class="tfoot">
+				<ul class="add-input">
+					<li class="id">
+						<input type="text" placeholder="ID" maxlength="4" class="td-edit" onblur="inputBlur(this)" oninput="editNumber(this)"/>
+					</li>
+					<li class="name">
+						<input type="text" placeholder="姓名" maxlength="5" class="td-edit" onblur="inputBlur(this)"/>
+					</li>
+					<li class="sex">
+						<i class="sex-option" onclick="sexSelect(this)">男</i><i class="sex-option" onclick="sexSelect(this)">女</i>
+					</li>
+					<li class="age">
+						<input type="text" placeholder="年龄" maxlength="3" class="td-edit" onblur="inputBlur(this)" oninput="editNumber(this)"/>
+					</li>
+					<li class="tr-done">完成</li>
+				</ul>
+				<i class="iconfont icon-add add-line"></i>
+			</div>
+		</div>
 		
 		<script src="table.js" type="text/javascript" charset="utf-8"></script>
 	</body>

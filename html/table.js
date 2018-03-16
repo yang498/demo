@@ -20,39 +20,29 @@ const data = [
 	{ id: 3, name: '三娃', sex: 0, age: 21},
 	{ id: 4, name: '四娃', sex: 1, age: 18},
 	{ id: 5, name: '五娃', sex: 0, age: 22},
-	{ id: 6, name: '六娃', sex: 1, age: 17},
-	{ id: 7, name: '七娃', sex: 0, age: 23}
 ]
-
-data.forEach((item, index) => {
-	$('tbody').innerHTML += `<tr>
-		<td class="id">${item.id}</td>
-		<td class="name" onclick="editName(this,${index})">${item.name}</td>
-		<td class="sex" onclick="editSex(this,${index})">${item.sex ? '女' : '男'}</td>
-		<td class="age" onclick="editAge(this,${index})">${item.age}</td>
-		<td class="del" onclick="delTr(this)"><i class="iconfont icon-del"></i></td>
-	</tr>`
-})
-
-// 只能输入数字
-const editNumber = function() {
-	this.value = this.value.replace(/[^\d]/, '')
+const $tody = $('.tbody')
+const trHtml = function(item, index) {
+	$tody.innerHTML += `<ul ontransitionend="this.remove()">
+		<li class="id">${item.id}</li>
+		<li class="name" ondblclick="editName(this, ${index})">${item.name}</li>
+		<li class="sex" ondblclick="editSex(this, ${index})">${item.sex ? '女' : '男'}</li>
+		<li class="age" ondblclick="editAge(this, ${index})">${item.age}</li>
+		<li class="del" onclick="delTr(this)" ontransitionend="event.stopPropagation()"><i class="iconfont icon-del"></i></li>
+	</ul>`
 }
+data.forEach((item, index) => trHtml(item, index))
 
 // 每行末尾删除单行
 const delTr = function(item) {
-	confirm('确定删除吗？') && item.parentNode.remove()
+	confirm('确定删除吗？') && item.parentNode.classList.add('ul-del')
 }
 
 // 双击可修改姓名、性别、年龄
 const editName =  function(item, index) {
-	item.innerHTML = `<input type="text" placeholder="${data[index].name}" maxlength="5" class="td-edit">`
+	item.innerHTML = `<input type="text" placeholder="${data[index].name}" maxlength="5" class="td-edit" onblur="editDone(this, ${index}, 'name')"/>`
 	$('.td-edit').focus()
 	$('.td-edit').value = data[index].name
-	$('.td-edit').on('blur', function(){
-		this.value && (data[index].name = this.value)
-		item.innerText = data[index].name
-	})
 }
 const editSex =  function(item, index) {
 	if(confirm('要修改性别吗？')) {
@@ -61,83 +51,56 @@ const editSex =  function(item, index) {
 	}
 }
 const editAge =  function(item, index) {
-	item.innerHTML = `<input type="text" placeholder="${data[index].age}" maxlength="3" class="td-edit">`
+	item.innerHTML = `<input type="text" placeholder="${data[index].age}" maxlength="3" class="td-edit" onblur="editDone(this, ${index}, 'age')" oninput="editNumber(this)"/>`
 	$('.td-edit').focus()
 	$('.td-edit').value = data[index].age
-	$('.td-edit').on('input', editNumber).on('blur', function(){
-		this.value && (data[index].age = this.value)
-		item.innerText = data[index].age
-	})
+}
+const editDone = function(item, index, type){
+	item.value && (data[index][type] = item.value)
+	item.parentNode.innerText = data[index][type]
+}
+const editNumber = function(item) {
+	item.value = item.value.replace(/[^\d]/, '')
 }
 
 // 增加一行
-$('tfoot').on('click', function(){
-	$('tbody').innerHTML += `<tr>
-		<td class="id"><input type="text" placeholder="ID" maxlength="4" class="td-edit td-number"></td>
-		<td class="name"><input type="text" placeholder="姓名" maxlength="5" class="td-edit"></td>
-		<td class="sex"><input type="radio" name="sex" value="0"/>男 <input type="radio" name="sex" value="1"/>女</td>
-		<td class="age"><input type="text" placeholder="年龄" maxlength="3" class="td-edit td-number"></td>
-		<td class="tr-done">完成</td>
-	</tr>`
-	for(let i = 0; i < $('.td-number').length; i++) $('.td-number')[i].on('input', editNumber)
-	$('.tr-done').on('blur', function(){
-		this.classList.remove('td-edit-fail')
-	}).on('click', function(){
+const inputBlur = function(item) {
+	item.classList.remove('td-edit-fail')
+}
+$('.add-line').on('click', function(){
+	this.classList.add('active')
+})
+const sexSelect = function(item){
+	item.parentNode.classList.remove('td-edit-fail-td');
+	(item.previousElementSibling || item.nextElementSibling).classList.remove('active')
+	item.classList.add('active')
+}
+$('.tr-done').on('click', function(){
+	if($('.add-line').classList.contains('active')) {
 		let $td = this.parentNode.children
-		let isDone = true
-		for(let i = 0; i < $td.length; i++) {
-			if(/[013]/.test(i) && !$td[i].children[0].value){
-				$td[i].children[0].classList.add('td-edit-fail')
-				$td[i].children[0].focus()
-				isDone = false
-			}
+		for(let i = 0; i < $td.length; i++) if(/[013]/.test(i) && !$td[i].children[0].value) {
+			$td[i].children[0].classList.add('td-edit-fail')
+			$td[i].children[0].focus()
+			return
 		}
 		if(!$td[2].children[0].checked && !$td[2].children[1].checked) {
 			$td[2].classList.add('td-edit-fail-td')
-			isDone = false
+			return
 		}
-		if(isDone) {
-			const item = {
-				id: $td[0].children[0].value,
-				name: $td[1].children[0].value,
-				sex: $td[2].children[0].checked ? 0 : 1,
-				age: $td[3].children[0].value,
-			}
-			data.push(item)
-			$('tbody tr:last-child').remove()
-			$('tbody').innerHTML += `<tr>
-				<td class="id">${item.id}</td>
-				<td class="name">${item.name}</td>
-				<td class="sex">${item.sex ? '女' : '男'}</td>
-				<td class="age">${item.age}</td>
-				<td class="del"><i class="iconfont icon-del"></i></td>
-			</tr>`
-			$('tbody tr:last-child .name').on('dblclick', editName(data.length - 1))
-			$('tbody tr:last-child .sex').on('dblclick', editSex(data.length - 1))
-			$('tbody tr:last-child .age').on('dblclick', editAge(data.length - 1))
-			$('tbody tr:last-child .del').on('click', delTr(data.length - 1))
+		const item = {
+			id: $td[0].children[0].value,
+			name: $td[1].children[0].value,
+			sex: $td[2].children[0].checked ? 0 : 1,
+			age: $td[3].children[0].value,
 		}
-	})
+		trHtml(item, data.length)
+		data.push(item)
+//		$('.td-edit').
+		$('.add-line').classList.remove('active')
+	}
 })
 
 let table = {
-	// 增加一行
-	add: function() {
-		document.querySelector('.t_add').addEventListener('click', function() {
-			var name = document.querySelector('.ti_name').value,
-				sex = document.querySelector('.ti_sex').value,
-				age = document.querySelector('.ti_age').value,
-				trl = document.querySelectorAll('.table tbody tr').length;
-
-			if(!isNaN(name) || name == '' || isNaN(age) || age == '') {
-				$('#rzsr').modal();
-			} else {
-				document.querySelector('.table tbody').innerHTML += '<tr><td class="t_choice"><i class="glyphicon glyphicon-unchecked"></i></td><td class="t_id">' + (++trl) + '</td><td class="t_name">' + name + '</td><td class="t_sex">' + sex + '</td><td class="t_age">' + age + '</td><td class="t_operate"><button class="btn btn-success t_edit">编辑</button><button class="btn btn-danger t_del">删除</button></td></tr>';
-				table.del();
-			}
-		});
-	},
-
 	// 删除多行
 	dels: function() {
 		var tr_dels = document.querySelector('.t_chdel'), //批量删除

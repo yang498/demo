@@ -21,9 +21,12 @@ const data = [
 	{ id: 4, name: '四娃', sex: 1, age: 18},
 	{ id: 5, name: '五娃', sex: 0, age: 22},
 ]
-const $tody = $('.tbody')
-const trHtml = function(item, index) {
-	$tody.innerHTML += `<ul ontransitionend="this.remove()">
+const $tbody = $('.tbody')
+const $addLine = $('.table .add-line')
+const $addInput = $('.table .add-input')
+const $mask = $('.mask')
+const addLine = function(item, index) {
+	$tbody.innerHTML += `<ul ontransitionend="this.remove()">
 		<li class="id">${item.id}</li>
 		<li class="name" ondblclick="editName(this, ${index})">${item.name}</li>
 		<li class="sex" ondblclick="editSex(this, ${index})">${item.sex ? '女' : '男'}</li>
@@ -31,7 +34,7 @@ const trHtml = function(item, index) {
 		<li class="del" onclick="delTr(this)" ontransitionend="event.stopPropagation()"><i class="iconfont icon-del"></i></li>
 	</ul>`
 }
-data.forEach((item, index) => trHtml(item, index))
+data.forEach((item, index) => addLine(item, index))
 
 // 每行末尾删除单行
 const delTr = function(item) {
@@ -40,9 +43,9 @@ const delTr = function(item) {
 
 // 双击可修改姓名、性别、年龄
 const editName =  function(item, index) {
-	item.innerHTML = `<input type="text" placeholder="${data[index].name}" maxlength="5" class="td-edit" onblur="editDone(this, ${index}, 'name')"/>`
-	$('.td-edit').focus()
-	$('.td-edit').value = data[index].name
+	item.innerHTML = `<input type="text" placeholder="${data[index].name}" maxlength="5" class="input" onblur="editDone(this, ${index}, 'name')"/>`
+	$('.table .input').focus()
+	$('.table .input').value = data[index].name
 }
 const editSex =  function(item, index) {
 	if(confirm('要修改性别吗？')) {
@@ -51,9 +54,9 @@ const editSex =  function(item, index) {
 	}
 }
 const editAge =  function(item, index) {
-	item.innerHTML = `<input type="text" placeholder="${data[index].age}" maxlength="3" class="td-edit" onblur="editDone(this, ${index}, 'age')" oninput="editNumber(this)"/>`
-	$('.td-edit').focus()
-	$('.td-edit').value = data[index].age
+	item.innerHTML = `<input type="text" placeholder="${data[index].age}" maxlength="3" class="input" onblur="editDone(this, ${index}, 'age')" oninput="editNumber(this)"/>`
+	$('.table .input').focus()
+	$('.table .input').value = data[index].age
 }
 const editDone = function(item, index, type){
 	item.value && (data[index][type] = item.value)
@@ -64,39 +67,51 @@ const editNumber = function(item) {
 }
 
 // 增加一行
-const inputBlur = function(item) {
-	item.classList.remove('td-edit-fail')
-}
-$('.add-line').on('click', function(){
+$addLine.on('click', function(){
 	this.classList.add('active')
+	$mask.classList.add('active')
+	$addInput.classList.add('active')
 })
+$mask.on('click', function(){
+	this.classList.remove('active')
+	$addInput.classList.remove('active')
+})
+const inputBlur = function(item) {
+	item.classList.remove('fail')
+}
 const sexSelect = function(item){
-	item.parentNode.classList.remove('td-edit-fail-td');
+	item.parentNode.classList.remove('fail');
 	(item.previousElementSibling || item.nextElementSibling).classList.remove('active')
 	item.classList.add('active')
 }
-$('.tr-done').on('click', function(){
-	if($('.add-line').classList.contains('active')) {
+$('.table .done').on('click', function(){
+	if($addLine.classList.contains('active')) {
+		
 		let $td = this.parentNode.children
-		for(let i = 0; i < $td.length; i++) if(/[013]/.test(i) && !$td[i].children[0].value) {
-			$td[i].children[0].classList.add('td-edit-fail')
-			$td[i].children[0].focus()
+		for(let i = 0; i < $td.length; i++){
+			if(/[013]/.test(i) && !$td[i].children[0].value) {
+				$td[i].children[0].classList.add('fail')
+				$td[i].children[0].focus()
+				return
+			}
+		}
+		if(!$td[2].children[0].classList.contains('active') && !$td[2].children[1].classList.contains('active')) {
+			$td[2].classList.add('fail')
 			return
 		}
-		if(!$td[2].children[0].checked && !$td[2].children[1].checked) {
-			$td[2].classList.add('td-edit-fail-td')
-			return
-		}
+		
 		const item = {
 			id: $td[0].children[0].value,
 			name: $td[1].children[0].value,
-			sex: $td[2].children[0].checked ? 0 : 1,
+			sex: $td[2].children[0].classList.contains('active') ? 0 : 1,
 			age: $td[3].children[0].value,
 		}
-		trHtml(item, data.length)
+		addLine(item, data.length)
 		data.push(item)
-//		$('.td-edit').
-		$('.add-line').classList.remove('active')
+		
+		$addLine.classList.remove('active')
+		for(let i = 0; i < $td.length; i++) if(/[013]/.test(i)) $td[i].children[0].value = ''
+		$td[2].children[0].classList.contains('active') ? $td[2].children[0].classList.remove('active') : $td[2].children[1].classList.remove('active')
 	}
 })
 

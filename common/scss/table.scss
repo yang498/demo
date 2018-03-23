@@ -74,35 +74,34 @@ body {
     .add {
         height: 40px;
         overflow: hidden;
-        .add-line {
-            display: block;
-            font-size: 24px;
-            line-height: 40px;
-            margin-top: -40px;
-            background-color: #fff;
+        background-color: #fff;
+        &.active {
             position: relative;
-            &.active {
-                margin: 0;
-                transition-duration: 0.4s;
-                border-top: 1px solid #ccc;
+            z-index: 1;
+            .add-content {
+                transform: translateY(-50%);
             }
         }
-        .add-input {
-            &.active {
+        .add-content {
+            transition-duration: 0.4s;
+            .add-line {
+                display: block;
+                font-size: 24px;
+                line-height: 40px;
                 background-color: #fff;
-                position: relative;
-                z-index: 1;
             }
-            .sex {
-                display: flex;
-                cursor: pointer;
-                .sex-option {
-                    flex: 1;
-                    &+.sex-option {
-                        border-left: 1px solid #ccc;
-                    }
-                    &.active {
-                        box-shadow: 0 0 0 1px $green inset;
+            .add-input {
+                .sex {
+                    display: flex;
+                    cursor: pointer;
+                    .sex-option {
+                        flex: 1;
+                        &+.sex-option {
+                            border-left: 1px solid #ccc;
+                        }
+                        &.active {
+                            box-shadow: 0 0 0 1px $green inset;
+                        }
                     }
                 }
             }

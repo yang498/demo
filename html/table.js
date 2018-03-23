@@ -1,19 +1,3 @@
-const $ = function(el) {
-	const res = document.querySelectorAll(el)
-	return res.length === 1 ? res[0] : res
-}
-HTMLElement.prototype.fd = function(el) {
-	const res = this.querySelectorAll(el)
-	return res.length === 1 ? res[0] : res
-}
-HTMLElement.prototype.on = function(type, fn) {
-	/\s/.test(type) ? type.split(' ').forEach(item => this.addEventListener(item, fn)) : this.addEventListener(type, fn)
-	return this
-}
-HTMLElement.prototype.index = function() {
-	for(let i = 0; i < this.parentNode.children.length; i++) if(this.parentNode.children[i] === this) return i
-}
-
 const data = [
 	{ id: 1, name: '大娃', sex: 0, age: 20},
 	{ id: 2, name: '二娃', sex: 1, age: 19},
@@ -38,7 +22,12 @@ data.forEach((item, index) => addLine(item, index))
 
 // 每行末尾删除单行
 const delTr = function(item) {
-	confirm('确定删除吗？') && item.parentNode.classList.add('ul-del')
+	$.popup('确定删除吗？', 'confirm', function(res){
+		if(res) {
+			item.parentNode.classList.add('ul-del')
+			$.toast('删除成功')
+		}
+	})
 }
 
 // 双击可修改姓名、性别、年龄
@@ -68,13 +57,12 @@ const editNumber = function(item) {
 
 // 增加一行
 $addLine.on('click', function(){
-	this.classList.add('active')
 	$mask.classList.add('active')
-	$addInput.classList.add('active')
+	$('.table .add').classList.add('active')
 })
 $mask.on('click', function(){
 	this.classList.remove('active')
-	$addInput.classList.remove('active')
+	$('.table .add').classList.remove('active')
 })
 const inputBlur = function(item) {
 	item.classList.remove('fail')
@@ -85,8 +73,7 @@ const sexSelect = function(item){
 	item.classList.add('active')
 }
 $('.table .done').on('click', function(){
-	if($addLine.classList.contains('active')) {
-		
+	if($addLine.parentNode.classList.contains('active')) {
 		let $td = this.parentNode.children
 		for(let i = 0; i < $td.length; i++){
 			if(/[013]/.test(i) && !$td[i].children[0].value) {
@@ -109,11 +96,13 @@ $('.table .done').on('click', function(){
 		addLine(item, data.length)
 		data.push(item)
 		
-		$addLine.classList.remove('active')
+		$addLine.parentNode.classList.remove('active')
 		for(let i = 0; i < $td.length; i++) if(/[013]/.test(i)) $td[i].children[0].value = ''
 		$td[2].children[0].classList.contains('active') ? $td[2].children[0].classList.remove('active') : $td[2].children[1].classList.remove('active')
 	}
 })
+
+// 长按多选删除
 
 let table = {
 	// 删除多行

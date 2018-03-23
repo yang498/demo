@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>弹窗</title>
+		<link rel="stylesheet" type="text/css" href="../common/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="../common/my/jq.css"/>
+		<style type="text/css">
+			.btn {
+				width: 200px;
+				color: #FFFFFF;
+				cursor: pointer;
+				font-size: 24px;
+				margin: 20px auto;
+				line-height: 60px;
+				text-align: center;
+				border-radius: 5px;
+				background-color: #00B4FA;
+				transition-duration: 0.2s;
+			}
+			.btn:hover {
+				background-color: #0088FF;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="btn normal">标准</div>
+		<div class="btn late" id="a">移动</div>
+		<div class="btn zoom">缩放</div>
+		<div class="btn zoom-rotate">缩放旋转</div>
+		
+		<script src="../common/my/jq.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$('.normal').on('click', function(){
+				$.popup('确定删除吗？', 'confirm', function(res){
+					$.toast(res ? '确定' : '取消')
+				})
+			})
+		</script>
+	</body>
+</html>

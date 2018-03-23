@@ -6,8 +6,9 @@
 		<title>表格</title>
 		<link rel="shortcut icon" href="../img/love.png" />
 		<link rel="stylesheet" type="text/css" href="../common/reset.css"/>
-		<link rel="stylesheet" type="text/css" href="../common/iconfont/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="../common/my/jq.css"/>
 		<link rel="stylesheet" type="text/css" href="../common/scss/table.css"/>
+		<link rel="stylesheet" type="text/css" href="../common/iconfont/iconfont.css"/>
 	</head>
 
 	<body>
@@ -27,26 +28,29 @@
 			</ul>
 			<div class="tbody"></div>
 			<div class="add">
-				<i class="iconfont icon-add add-line"></i>
-				<ul class="add-input">
-					<li class="id">
-						<input type="text" placeholder="ID" maxlength="4" class="input" onblur="inputBlur(this)" oninput="editNumber(this)"/>
-					</li>
-					<li class="name">
-						<input type="text" placeholder="姓名" maxlength="5" class="input" onblur="inputBlur(this)"/>
-					</li>
-					<li class="sex">
-						<i class="sex-option" onclick="sexSelect(this)">男</i><i class="sex-option" onclick="sexSelect(this)">女</i>
-					</li>
-					<li class="age">
-						<input type="text" placeholder="年龄" maxlength="3" class="input" onblur="inputBlur(this)" oninput="editNumber(this)"/>
-					</li>
-					<li class="done">完成</li>
-				</ul>
+				<div class="add-content">
+					<i class="iconfont icon-add add-line"></i>
+					<ul class="add-input">
+						<li class="id">
+							<input type="text" placeholder="ID" maxlength="4" class="input" onblur="inputBlur(this)" oninput="editNumber(this)"/>
+						</li>
+						<li class="name">
+							<input type="text" placeholder="姓名" maxlength="5" class="input" onblur="inputBlur(this)"/>
+						</li>
+						<li class="sex">
+							<i class="sex-option" onclick="sexSelect(this)">男</i><i class="sex-option" onclick="sexSelect(this)">女</i>
+						</li>
+						<li class="age">
+							<input type="text" placeholder="年龄" maxlength="3" class="input" onblur="inputBlur(this)" oninput="editNumber(this)"/>
+						</li>
+						<li class="done">完成</li>
+					</ul>
+				</div>
 			</div>
 			<div class="mask"></div>
 		</div>
 		
+		<script src="../common/my/jq.js" type="text/javascript" charset="utf-8"></script>
 		<script src="table.js" type="text/javascript" charset="utf-8"></script>
 	</body>
 

@@ -49,6 +49,9 @@ body {
         font-size: 16px;
         text-align: center;
         border: none;
+        &.active {
+            box-shadow: 0 0 0 1px $green inset;
+        }
     }
     .input.fail, .sex.fail {
         box-shadow: 0 0 0 1px #f00 inset;
@@ -62,6 +65,9 @@ body {
     .tbody{
         ul:nth-child(2n) {
             background-color: #f5f5f5;
+        }
+        li {
+            padding-bottom: 1px;
         }
         .del {
             color: #f00;

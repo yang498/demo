@@ -6,8 +6,8 @@ const data = [
 	{ id: 5, name: '五娃', sex: 0, age: 22},
 ]
 const $tbody = $('.tbody')
+const $add = $('.table .add')
 const $addLine = $('.table .add-line')
-const $addInput = $('.table .add-input')
 const $mask = $('.mask')
 const addLine = function(item, index) {
 	$tbody.innerHTML += `<ul ontransitionend="this.remove()">
@@ -32,20 +32,23 @@ const delTr = function(item) {
 
 // 双击可修改姓名、性别、年龄
 const editName =  function(item, index) {
-	item.innerHTML = `<input type="text" placeholder="${data[index].name}" maxlength="5" class="input" onblur="editDone(this, ${index}, 'name')"/>`
-	$('.table .input').focus()
-	$('.table .input').value = data[index].name
+	item.innerHTML = `<input type="text" placeholder="${data[index].name}" maxlength="5" class="input active" onblur="editDone(this, ${index}, 'name')"/>`
+	$('.tbody .input').focus()
+	$('.tbody .input').value = data[index].name
 }
 const editSex =  function(item, index) {
-	if(confirm('要修改性别吗？')) {
-		data[index].sex = !data[index].sex
-		item.innerText = data[index].sex ? '女' : '男'
-	}
+	$.popup('要修改性别吗？', 'confirm', function(res){
+		if(res) {
+			data[index].sex = !data[index].sex
+			item.innerText = data[index].sex ? '女' : '男'
+			$.toast('修改成功')
+		}
+	})
 }
 const editAge =  function(item, index) {
-	item.innerHTML = `<input type="text" placeholder="${data[index].age}" maxlength="3" class="input" onblur="editDone(this, ${index}, 'age')" oninput="editNumber(this)"/>`
-	$('.table .input').focus()
-	$('.table .input').value = data[index].age
+	item.innerHTML = `<input type="text" placeholder="${data[index].age}" maxlength="3" class="input active" onblur="editDone(this, ${index}, 'age')" oninput="editNumber(this)"/>`
+	$('.tbody .input').focus()
+	$('.tbody .input').value = data[index].age
 }
 const editDone = function(item, index, type){
 	item.value && (data[index][type] = item.value)
@@ -58,11 +61,11 @@ const editNumber = function(item) {
 // 增加一行
 $addLine.on('click', function(){
 	$mask.classList.add('active')
-	$('.table .add').classList.add('active')
+	$add.classList.add('active')
 })
 $mask.on('click', function(){
 	this.classList.remove('active')
-	$('.table .add').classList.remove('active')
+	$add.classList.remove('active')
 })
 const inputBlur = function(item) {
 	item.classList.remove('fail')
@@ -73,7 +76,7 @@ const sexSelect = function(item){
 	item.classList.add('active')
 }
 $('.table .done').on('click', function(){
-	if($addLine.parentNode.classList.contains('active')) {
+	if($add.classList.contains('active')) {
 		let $td = this.parentNode.children
 		for(let i = 0; i < $td.length; i++){
 			if(/[013]/.test(i) && !$td[i].children[0].value) {
@@ -96,7 +99,8 @@ $('.table .done').on('click', function(){
 		addLine(item, data.length)
 		data.push(item)
 		
-		$addLine.parentNode.classList.remove('active')
+		$add.classList.remove('active')
+		$mask.classList.remove('active')
 		for(let i = 0; i < $td.length; i++) if(/[013]/.test(i)) $td[i].children[0].value = ''
 		$td[2].children[0].classList.contains('active') ? $td[2].children[0].classList.remove('active') : $td[2].children[1].classList.remove('active')
 	}

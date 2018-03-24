@@ -49,18 +49,17 @@ $.popup = function(text, type, callback) {
 	})
 }
 
+// 触发body添加元素,队列1毫秒添加active淡入,默认定时3秒删除
 let toastTimer = null
 $.toast = function(text, duration = 2000) {
-	// 触发body添加元素,队列1毫秒添加active淡入,默认定时3秒删除
-	// 连续触发失败
 	clearTimeout(toastTimer)
-	$('#toast').length && $('#toast').remove()
+	$('#toast').innerText && $('#toast').remove()
 	$('body').insertAdjacentHTML('beforeend', '<div id="toast">' + text + '</div>')
 	setTimeout(function(){
 		$('#toast').classList.add('active')
 	}, 1)
 	toastTimer = setTimeout(function(){
-		$('#toast').on('transitionend', function(){
+		$('#toast').innerText && $('#toast').on('transitionend', function(){
 			this.remove()
 		}).classList.remove('active')
 	}, duration)

@@ -6,18 +6,13 @@
 		<title>表格</title>
 		<link rel="shortcut icon" href="../img/love.png" />
 		<link rel="stylesheet" type="text/css" href="../common/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_566271_mzzw8u8b2er60f6r.css"/>
 		<link rel="stylesheet" type="text/css" href="../common/my/jq.css"/>
 		<link rel="stylesheet" type="text/css" href="../common/scss/table.css"/>
-		<link rel="stylesheet" type="text/css" href="../common/iconfont/iconfont.css"/>
 	</head>
 
 	<body>
-		<!--
-		<input type="button" value="删除" class="btn btn-add" />
-		<input type="button" value="取消" class="btn btn-add hide" />
-		<input type="text" placeholder="请搜索" class="form-control ti_search" />
-		<button class="btn btn-success t_search">搜索</button>-->
-		<!--select排序：默认选中按时间，名字，只看男，只看女-->
+		<!--搜索（ID、姓名、年龄）、排序（ID、姓名、性别、年龄正反排序）、筛选（ID、年龄滑杆，只看男、女）-->
 		<div class="table">
 			<ul class="thead">
 				<li>ID</li>
@@ -29,9 +24,11 @@
 			<div class="tbody"></div>
 			<div class="add">
 				<div class="add-content">
-					<div class="multiple">
-						
-					</div>
+					<ul class="multiple">
+						<li class="multiple-select">全选</li>
+						<li class="multiple-del"><i class="iconfont icon-del del-mul"></i></li>
+						<li class="multiple-cancel">取消</li>
+					</ul>
 					<i class="iconfont icon-add add-line"></i>
 					<ul class="add-input">
 						<li class="id">

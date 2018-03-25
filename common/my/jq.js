@@ -2,6 +2,9 @@ const $ = function(el) {
 	const res = document.querySelectorAll(el)
 	return res.length === 1 ? res[0] : res
 }
+const $$ = function(el) {
+	return document.querySelectorAll(el)
+}
 HTMLElement.prototype.fd = function(el) {
 	const res = this.querySelectorAll(el)
 	return res.length === 1 ? res[0] : res
@@ -53,13 +56,13 @@ $.popup = function(text, type, callback) {
 let toastTimer = null
 $.toast = function(text, duration = 2000) {
 	clearTimeout(toastTimer)
-	$('#toast').innerText && $('#toast').remove()
+	$$('#toast').length && $('#toast').remove()
 	$('body').insertAdjacentHTML('beforeend', '<div id="toast">' + text + '</div>')
 	setTimeout(function(){
 		$('#toast').classList.add('active')
 	}, 1)
 	toastTimer = setTimeout(function(){
-		$('#toast').innerText && $('#toast').on('transitionend', function(){
+		$$('#toast').length && $('#toast').on('transitionend', function(){
 			this.remove()
 		}).classList.remove('active')
 	}, duration)

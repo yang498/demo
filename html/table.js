@@ -4,51 +4,65 @@ const data = [
 	{ id: 3, name: '三娃', sex: 0, age: 21},
 	{ id: 4, name: '四娃', sex: 1, age: 18},
 	{ id: 5, name: '五娃', sex: 0, age: 22},
+	{ id: 6, name: '六妹', sex: 1, age: 16},
 ]
 const $tbody = $('.tbody')
 const $add = $('.table .add')
+const $mulSel = $('.multiple-select')
+const $mulDel = $('.multiple-del')
+const $mulCan = $('.multiple-cancel')
+const $done = $('.table .done')
 const $addLine = $('.table .add-line')
 const $mask = $('.mask')
 const addLine = function(item, index) {
-	$tbody.innerHTML += `<ul ontransitionend="this.remove()">
+	$tbody.innerHTML += `<ul ontransitionend="this.remove()" onmousedown="longpress(this)" onclick="longpressSelect(this)">
 		<li class="id">${item.id}</li>
 		<li class="name" ondblclick="editName(this, ${index})">${item.name}</li>
 		<li class="sex" ondblclick="editSex(this, ${index})">${item.sex ? '女' : '男'}</li>
 		<li class="age" ondblclick="editAge(this, ${index})">${item.age}</li>
-		<li class="del" onclick="delTr(this)" ontransitionend="event.stopPropagation()"><i class="iconfont icon-del"></i></li>
+		<li class="del" onclick="delTr(this, ${index})" ontransitionend="event.stopPropagation()" onmousedown="event.stopPropagation()"><i class="iconfont icon-del"></i></li>
 	</ul>`
 }
 data.forEach((item, index) => addLine(item, index))
 
 // 每行末尾删除单行
-const delTr = function(item) {
-	$.popup('确定删除吗？', 'confirm', function(res){
-		if(res) {
-			item.parentNode.classList.add('ul-del')
-			$.toast('删除成功')
-		}
-	})
+const delTr = function(item, index) {
+	if(!$tbody.classList.contains('active')) {
+		$.popup('确定删除吗？', 'confirm', function(res){
+			if(res) {
+				data.splice(index, 1)
+				item.parentNode.classList.add('ul-del')
+				$.toast('删除成功')
+			}
+		})
+	}
 }
 
 // 双击可修改姓名、性别、年龄
 const editName =  function(item, index) {
-	item.innerHTML = `<input type="text" placeholder="${data[index].name}" maxlength="5" class="input active" onblur="editDone(this, ${index}, 'name')"/>`
-	$('.tbody .input').focus()
-	$('.tbody .input').value = data[index].name
+	if(!$tbody.classList.contains('active')) {
+		item.innerHTML = `<input type="text" placeholder="${data[index].name}" maxlength="5" class="input active" onblur="editDone(this, ${index}, 'name')"/>`
+		$('.tbody .input').focus()
+		$('.tbody .input').value = data[index].name
+	}
 }
 const editSex =  function(item, index) {
-	$.popup('要修改性别吗？', 'confirm', function(res){
-		if(res) {
-			data[index].sex = !data[index].sex
-			item.innerText = data[index].sex ? '女' : '男'
-			$.toast('修改成功')
-		}
-	})
+	if(!$tbody.classList.contains('active')) {
+		$.popup('要修改性别吗？', 'confirm', function(res){
+			if(res) {
+				data[index].sex = !data[index].sex
+				item.innerText = data[index].sex ? '女' : '男'
+				$.toast('修改成功')
+			}
+		})
+	}
 }
 const editAge =  function(item, index) {
-	item.innerHTML = `<input type="text" placeholder="${data[index].age}" maxlength="3" class="input active" onblur="editDone(this, ${index}, 'age')" oninput="editNumber(this)"/>`
-	$('.tbody .input').focus()
-	$('.tbody .input').value = data[index].age
+	if(!$tbody.classList.contains('active')) {
+		item.innerHTML = `<input type="text" placeholder="${data[index].age}" maxlength="3" class="input active" onblur="editDone(this, ${index}, 'age')" oninput="editNumber(this)"/>`
+		$('.tbody .input').focus()
+		$('.tbody .input').value = data[index].age
+	}
 }
 const editDone = function(item, index, type){
 	item.value && (data[index][type] = item.value)
@@ -75,7 +89,7 @@ const sexSelect = function(item){
 	(item.previousElementSibling || item.nextElementSibling).classList.remove('active')
 	item.classList.add('active')
 }
-$('.table .done').on('click', function(){
+$done.on('click', function(){
 	if($add.classList.contains('active')) {
 		let $td = this.parentNode.children
 		for(let i = 0; i < $td.length; i++){
@@ -107,116 +121,59 @@ $('.table .done').on('click', function(){
 })
 
 // 长按多选删除
+let longpressTimer = null
+const longpress = function(item){
+	longpressTimer = setTimeout(() => {
+		$tbody.classList.add('active')
+		$add.classList.add('active-mul')
+	}, 1000)
+}
+const longpressSelect = function(item) {
+	if($tbody.classList.contains('active')) {
+		item.classList.toggle('active')
+		$mulSel.innerText = '全不选'
+		for(let i = 0; i < $$('.tbody ul').length; i++) {
+			if(!$$('.tbody ul')[i].classList.contains('active')) {
+				$mulSel.innerText = '全选'
+				return
+			}
+		}
+	}
+}
+$tbody.on('mouseup mousemove', function(){
+	clearTimeout(longpressTimer)
+})
+$mulSel.on('click', function(){
+	if(this.innerText === '全选') {
+		for(let i = 0; i < $$('.tbody ul').length; i++) $$('.tbody ul')[i].classList.add('active')
+		this.innerText = '全不选'
+	} else {
+		for(let i = 0; i < $$('.tbody ul').length; i++) $$('.tbody ul')[i].classList.remove('active')
+		this.innerText = '全选'
+	}
+})
+$mulDel.on('click', function(){
+	$.popup('确定删除吗？', 'confirm', function(res){
+		if(res) {
+			for(let i = 0; i < $$('.tbody ul').length; i++) {
+				if($$('.tbody ul')[i].classList.contains('active')) {
+					data.splice(i, 1)
+					$$('.tbody ul')[i].classList.add('ul-del')
+				}
+			}
+			$mulCan.click()
+			$.toast('删除成功')
+		}
+	})
+})
+$mulCan.on('click', function(){
+	$mulSel.innerText = '全选'
+	$tbody.classList.remove('active')
+	$add.classList.remove('active-mul')
+	for(let i = 0; i < $$('.tbody ul').length; i++) $$('.tbody ul')[i].classList.remove('active')
+})
 
 let table = {
-	// 删除多行
-	dels: function() {
-		var tr_dels = document.querySelector('.t_chdel'), //批量删除
-			acc = document.querySelector('.t_chcan'), //完成
-			deldel = document.querySelector('.t_deldel'), //删除选中的
-			all = document.querySelector('.t_all'); //全选
-
-		function varDels() {
-			this.choice = document.querySelectorAll('.t_choice'); //每个tr的第一个td选择，包括第一个全选按钮
-			this.check = document.querySelectorAll('i'); //每个选择的icon
-			this.ckd = document.querySelectorAll('.glyphicon-check'); //每个选中的icon
-			this.tr_del = document.querySelectorAll('.t_del'); //每个tr的删除按钮
-			this.tr_edit = document.querySelectorAll('.t_edit'); //每个tr的编辑按钮
-		}
-
-		function allYes() {
-			all.innerHTML = '全选';
-			all.className = 'btn btn-primary t_all';
-		}
-
-		function allNo() {
-			all.innerHTML = '全不选';
-			all.className = 'btn btn-info t_all';
-		}
-
-		//点击全选
-		all.addEventListener('click', function() {
-			varDels();
-			if(this.innerHTML == '全选') {
-				for(var i = 0; i < check.length; i++) {
-					check[i].className = 'glyphicon glyphicon-check';
-				}
-				allNo();
-			} else if(this.innerHTML == '全不选') {
-				for(var i = 0; i < check.length; i++) {
-					check[i].className = 'glyphicon glyphicon-unchecked';
-				}
-				allYes();
-			} else {
-				return;
-			}
-			varDels();
-			ckd.length == 0 ? deldel.setAttribute('disabled', true) : deldel.removeAttribute('disabled');
-		});
-
-		//点击每个选择按钮
-		(function() {
-			varDels();
-			for(var i = 0; i < check.length; i++) {
-				check[i].addEventListener('click', function() {
-					this.className == 'glyphicon glyphicon-unchecked' ? this.className = 'glyphicon glyphicon-check' : this.className = 'glyphicon glyphicon-unchecked';
-					varDels();
-					ckd.length == check.length ? allNo() : allYes();
-					ckd.length == 0 ? deldel.setAttribute('disabled', true) : deldel.removeAttribute('disabled');
-				});
-			}
-		})();
-
-		//点击批量删除
-		tr_dels.addEventListener('click', function() {
-			varDels();
-			for(var i = 0; i < choice.length; i++) {
-				choice[i].style.display = 'table-cell';
-			}
-			this.style.display = 'none';
-			acc.style.display = 'block';
-			deldel.style.display = 'block';
-			for(var i = 0; i < tr_del.length; i++) {
-				tr_del[i].setAttribute('disabled', true);
-				tr_edit[i].setAttribute('disabled', true);
-			}
-		});
-
-		//点击完成
-		acc.addEventListener('click', function() {
-			varDels();
-			for(var i = 0; i < choice.length; i++) {
-				choice[i].style.display = '';
-			}
-			for(var i = 0; i < check.length; i++) {
-				check[i].className = 'glyphicon glyphicon-unchecked';
-				tr_del[i].removeAttribute('disabled');
-				tr_edit[i].removeAttribute('disabled');
-			}
-			this.style.display = 'none';
-			deldel.style.display = 'none';
-			tr_dels.style.display = 'block';
-			deldel.setAttribute('disabled', true);
-			allYes();
-		});
-
-		//删除选中的
-		deldel.addEventListener('click', function() {
-			varDels();
-			$("#zdsc").modal();
-			document.querySelector('.m_zd').addEventListener('click', function() {
-				$("#zdsc").modal('hide');
-				for(var i = 0; i < check.length; i++) {
-					check[i].parentNode.parentNode.parentNode.removeChild(check[i].parentNode.parentNode);
-				}
-				table.idsort();
-			});
-			document.querySelector('.m_sd').addEventListener('click', function() {
-				$("#zdsc").modal('hide');
-			});
-		});
-	},
-
 	// 搜索，击其他操作取消显示结果？？？
 	search: function() {
 		document.querySelector('.t_search').addEventListener('click', function() {

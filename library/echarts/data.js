@@ -111,7 +111,7 @@ let excelProName = []
 let excelCityName = []
 for(let item of excelProData) excelProName.push(item.name)
 for(let item of excelCityData) excelCityName.push(item.name)
-// 省人数柱形图分东南西北，青海和西藏暂时没人
+// 省人数柱形图分东南西北
 const proEast = ['安徽', '江苏', '上海', '浙江']
 const proSouth = ['福建', '广东', '广西', '海南', '湖南', '江西']
 const proWest = ['重庆', '甘肃', '贵州', '湖北', '宁夏', '青海', '陕西', '四川', '新疆', '西藏', '云南']

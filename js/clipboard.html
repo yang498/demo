@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>剪贴板</title>
+		<style type="text/css">
+			.btn {
+				width: 180px;
+				line-height: 50px;
+				color: #FFF;
+				background: #00b4fd;
+				text-align: center;
+				font-size: 20px;
+				cursor: pointer;
+				font-weight: bold;
+				text-decoration: none;
+				border-radius: 5px;
+				margin: 50px auto;
+				transition-duration: 0.2s;
+			}
+			
+			.btn:hover {
+				background-color: #08f;
+				box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.3) inset;
+			}
+			
+			textarea {
+				width: 100%;
+				height: 300px;
+				font-size: 20px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="btn">tan90°</div>
+		<textarea placeholder="双击清空" ondblclick="this.value=''"></textarea>
+
+		<script type="text/javascript">
+			// IE
+			// clipboardData.getData('text')
+			// clipboardData.setData('text', str)
+			// 复制后可读取：getSelection().toString()
+
+			document.body.addEventListener('copy', function(e) {
+				if(window.getSelection().toString() && window.getSelection().toString().length > 4) {
+					if(e.clipboardData) {
+						e.preventDefault()
+						e.clipboardData.setData('text', window.getSelection().toString() + '\n不存在的')
+					}
+				}
+			})
+		</script>
+		<script type="text/javascript">
+			//作者： 郑航
+			//链接： https: //www.zhihu.com/question/38685128/answer/77604309
+			//来源： 知乎
+			//著作权归作者所有。 商业转载请联系作者获得授权， 非商业转载请注明出处。
+
+			var zhihu = function(a, b, c) {
+				function addText(link, er) { // 要添加的内容的数组
+					return ['著作权归作者所有。',
+						'商业转载请联系作者获得授权，非商业转载请注明出处。',
+						'作者：' + er,
+						'链接：' + link,
+						'来源：知乎',
+						'',
+						''
+					]
+				}
+
+				function conactText(text, link, er) { // 将要添加的内容拼接
+					return '<div>' + addText(link, er).join('<br />') + text + '</div>'
+				}
+
+				function g(e) {
+					var g = z.Xq(),
+						m = g && (0, z.ib)(g.Gd())
+					if(m && !(42 > m.length)) {
+						if('object' === typeof e.originalEvent.clipboardData && (e.originalEvent.clipboardData.setData('text/html', conactText(g.Of(), b, c)), e.originalEvent.clipboardData.setData('text/plain', addText(b, c).join('\n') + m), 0 < e.originalEvent.clipboardData.getData('text/plain').length)) {
+							e.preventDefault()
+							return
+						}
+						if(window.getSelection) {
+							e = g.Of()
+							var n = (0, window.$)(conactText(e, b, c)).css({
+								position: 'fixed',
+								left: '-9999px'
+							}).appendTo('body')
+							window.getSelection().selectAllChildren(n.get(0))
+							(0, window.setTimeout)(function() {
+								g.select()
+								n.remove()
+							}, 200)
+						}
+					}
+				}
+				a && b && c && (z.Fa(b, 'http') || (b = window.location.protocol + '//' + window.location.host + b), a.on('copy', g))
+			}
+		</script>
+	</body>
+
+</html>

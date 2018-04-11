@@ -1,3 +1,6 @@
+// querySelector和querySelectorAll IE8+浏览器支持
+// 注意:是先在全局范围内搜索给定的CSS选择器，然后过滤出哪些属于当前元素的子元素
+// 搞完列一遍所有的方法
 const $ = function(el) {
 	const res = document.querySelectorAll(el)
 	return res.length === 1 ? res[0] : res

@@ -6,7 +6,7 @@
 		<title>app用户</title>
 		<link rel="shortcut icon" href="../../../img/love.png" />
 		<style type="text/css">
-			#pro, #city {
+			#pro, #city, iframe {
 				width: 100%;
 				height: 600px;
 				margin: 50px 0;
@@ -16,43 +16,24 @@
 	<body>
 		<div id="pro"></div>
 		<div id="city"></div>
+		<iframe src="http://admin.m.renrenck.cn/main"></iframe>
+		<!-- 用户名：user，密码：rrck.321 -->
 		
 		<script src="../echarts-4.0.2.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../excel.js" type="text/javascript" charset="utf-8"></script>
-		<script src="app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="app-excel.js" type="text/javascript" charset="utf-8"></script>
+		<script src="app-data.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			// 去掉带有省直辖，将英文逗号改成中文逗号
-			var proData = []
-			var proDataExcel = []
-			var cityData = []
-			var cityDataExcel = []
-			app.split('\n').forEach(function(obj, index){
-				var item = obj.split(',')
-				var proItem = item[5].replace(/省/, '')
-				var cityItem = item[6].replace(/市/, '')
-				proItem.indexOf('区') > -1 && (proItem = proItem.slice(0, 2))
-				proItem === '内蒙' && (proItem = '内蒙古')
-				// 省
-				if(proData.indexOf(proItem) < 0){
-					proData.push(proItem)
-					proDataExcel.push({name:proItem, value:1})
-				} else {
-					proDataExcel[proData.indexOf(proItem)].value++
-				}
-				// 市
-				var city = /北京|天津|上海|重庆/.test(proItem) ? proItem : item[6]
-				if(cityData.indexOf(city) < 0){
-					cityData.push(city)
-					cityDataExcel.push({name:city,value:1})
-				} else {
-					cityDataExcel[cityData.indexOf(city)].value++
-				}
-			})
-			proDataExcel.sort(function(a, b){ return b.value - a.value })
-			var proName = []
-			var cityName = []
-			for(var item of proDataExcel) proName.push(item.name)
-			for(var item of cityDataExcel) cityName.push(item.name)
+			/*
+			 最近30天的登录情况
+			 最近30天的用户新增情况
+			*/ 
+			// App用户类型总计饼图，每天更新
+			// 公司类型总计饼图，每天更新
+			// 以下每周更新
+			// 省柱状 ✔
+			// 市柱状
+			// 地图分布
 			
 			// 各省排名柱状图
 			echarts.init(document.getElementById('pro')).setOption({

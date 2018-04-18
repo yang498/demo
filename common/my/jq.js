@@ -5,9 +5,7 @@ const $ = function(el) {
 	const res = document.querySelectorAll(el)
 	return res.length === 1 ? res[0] : res
 }
-const $$ = function(el) {
-	return document.querySelectorAll(el)
-}
+const $$ = el => document.querySelectorAll(el)
 HTMLElement.prototype.fd = function(el) {
 	const res = this.querySelectorAll(el)
 	return res.length === 1 ? res[0] : res
@@ -21,6 +19,12 @@ NodeList.prototype.on = function(type, fn) {
 }
 HTMLElement.prototype.index = function() {
 	for(let i = 0; i < this.parentNode.children.length; i++) if(this.parentNode.children[i] === this) return i
+}
+NodeList.prototype.addClass = function(cl) {	// 仅限多个元素，单个的还是原生
+	for(let i = 0; i < this.length; i++) this[i].classList.add(cl)
+}
+NodeList.prototype.removeClass = function(cl) {	// 仅限多个元素，单个的还是原生
+	for(let i = 0; i < this.length; i++) this[i].classList.remove(cl)
 }
 
 $.popup = function(text, type, callback) {
@@ -55,7 +59,7 @@ $.popup = function(text, type, callback) {
 	})
 }
 
-// 触发body添加元素,队列1毫秒添加active淡入,默认定时3秒删除
+// 触发body添加元素,异步1毫秒添加active淡入,默认定时3秒删除
 let toastTimer = null
 $.toast = function(text, duration = 2000) {
 	clearTimeout(toastTimer)

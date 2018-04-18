@@ -5,6 +5,7 @@
 		<title>工作常用</title>
 		<link rel="shortcut icon" href="img/love.png" />
 		<link rel="stylesheet" type="text/css" href="common/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="common/my/jq.css"/>
 		<style type="text/css">
 			/*::-webkit-scrollbar{
 				display:none;
@@ -181,18 +182,15 @@
 				梓恒风铃：553756803
 				企业邮箱：yangyang@renrenck.cn
 				绑定的网站：订阅号、服务号、小程序、developer邮箱、友盟、七牛云、腾讯开放平台、coding
+				向家庭组添加其他计算机以访问其中的文件或打印机需要输入的密码：Dz2pH6Zj9A
 			</li>
 		</ul>
 		
 		<script src="common/my/jq.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			let index = 0
 			$('.head li').on('mouseenter', function(){
-				$('.head li')[index].classList.remove('active')
-				$('.body li')[index].classList.remove('active')
-				this.classList.add('active')
-				index = this.index()
-				$('.body li')[index].classList.add('active')
+				$('.head li, .body li').removeClass('active')
+				$(`.head li:nth-child(${this.index() + 1}), .body li:nth-child(${this.index() + 1})`).addClass('active')
 			})
 		</script>
 	</body>

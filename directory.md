@@ -4,6 +4,7 @@ css：progress进度条
 js：constructor、prototype、clipboard
 library：jq（练习jq）
 node：全部
+gulp
 包括这个目录也可以做个页面，跳转到对应页面
 
 ###html

@@ -1,10 +1,18 @@
 // querySelector和querySelectorAll IE8+浏览器支持
 // 注意:是先在全局范围内搜索给定的CSS选择器，然后过滤出哪些属于当前元素的子元素
 // 搞完列一遍所有的方法
-const $ = function(el) {
-	const res = document.querySelectorAll(el)
-	return res.length === 1 ? res[0] : res
-}
+/*
+	$：获取单个元素
+	$$：获取多个元素
+	el.on('type', fn)：元素绑定事件
+	el.index()：获取该元素是第几个
+	el.addClass('class')：添加class，仅限多个元素，单个的还是原生
+	el.removeClass('class')：删除class，仅限多个元素，单个的还是原生
+	$.popup('text', 'type', callback)：弹框，type可选confirm，否则就是alert
+	$.toast('text', duration = 2000)：提示框
+*/
+
+const $ = el => document.querySelector(el)
 const $$ = el => document.querySelectorAll(el)
 HTMLElement.prototype.fd = function(el) {
 	const res = this.querySelectorAll(el)
@@ -20,10 +28,10 @@ NodeList.prototype.on = function(type, fn) {
 HTMLElement.prototype.index = function() {
 	for(let i = 0; i < this.parentNode.children.length; i++) if(this.parentNode.children[i] === this) return i
 }
-NodeList.prototype.addClass = function(cl) {	// 仅限多个元素，单个的还是原生
+NodeList.prototype.addClass = function(cl) {
 	for(let i = 0; i < this.length; i++) this[i].classList.add(cl)
 }
-NodeList.prototype.removeClass = function(cl) {	// 仅限多个元素，单个的还是原生
+NodeList.prototype.removeClass = function(cl) {
 	for(let i = 0; i < this.length; i++) this[i].classList.remove(cl)
 }
 
@@ -60,15 +68,15 @@ $.popup = function(text, type, callback) {
 }
 
 // 触发body添加元素,异步1毫秒添加active淡入,默认定时3秒删除
-let toastTimer = null
+$.toastTimer = null
 $.toast = function(text, duration = 2000) {
-	clearTimeout(toastTimer)
+	clearTimeout($.toastTimer)
 	$$('#toast').length && $('#toast').remove()
 	$('body').insertAdjacentHTML('beforeend', '<div id="toast">' + text + '</div>')
 	setTimeout(function(){
 		$('#toast').classList.add('active')
 	}, 1)
-	toastTimer = setTimeout(function(){
+	$.toastTimer = setTimeout(function(){
 		$$('#toast').length && $('#toast').on('transitionend', function(){
 			this.remove()
 		}).classList.remove('active')

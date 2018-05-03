@@ -1,5 +1,5 @@
-const month30 = [4,6,9,11]
-const month31 = [1,3,5,7,8,10,12]
+const month30 = [4, 6, 9, 11]
+const month31 = [1, 3, 5, 7, 8, 10, 12]
 const week = ['日', '一', '二', '三', '四', '五', '六']
 // 合并所有月的数据
 let nowMonth = 0
@@ -36,16 +36,16 @@ for(let i = 0; i < 32; i++) {	// 如果这一天的数据不存在则跳过到�
 }
 // 建立折线图x轴的日期，初始为data的起始日期
 let xDate = [data.startDate.slice(5)]
-let month = data.startDate[5]	// 起始月份
-let today = data.startDate.slice(-2) - 0	// 日期
-const day = data.all.length - 1	// 所有天数
+let month = data.startDate[5] - 0	// 起始月份，1月是个字符串
+let today = data.startDate.slice(-2)	// 日期
+const day = data.all.length - 1	// 所有天数，标题会用到
 for(let i = 1; i <= day; i++) {
-	today = isNaN(data.east[i]) ? data.east[i].replace(/\d*,/, '') : today - 0 + 1	// 如果这一天是个字符串则跳到指定的天数
-	xDate.push(month + '/' + today)
-	if((month31.indexOf(month) && today > 31) || (month30.indexOf(month) && today > 30) || (month == 2 && today >= 28)) {
+	if((month31.indexOf(month) > -1 && today > 31) || (month30.indexOf(month) > -1 && today > 30) || (month == 2 && today >= 28)) {
 		month++
 		today = 0
 	}
+	today = isNaN(data.east[i]) ? data.east[i].replace(/\d*,/, '') : today - 0 + 1	// 如果这一天是个字符串则跳到指定的天数
+	xDate.push(month + '/' + today)
 }
 // 2/2号开始建立南北2区，加上1区人数，如果再建立3区再加上2区人数----------------------------------------
 for(let i = data.east1.length + 1; i < data.east.length; i++) {

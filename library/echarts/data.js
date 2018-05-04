@@ -24,7 +24,7 @@ for(let i = 0; i < 32; i++) {	// 如果这一天的数据不存在则跳过到�
 		nowMonth++
 		continue
 	}
-	data.east.push(data[dataNameE[nowMonth]][i])	// 如果只有东push了字符串那就多一天，在建立xDate的时候删掉
+	data.east.push(data[dataNameE[nowMonth]][i]) // 因为需要有跳过的需求，所以有一个作为循环，需要加入字符串，也就多一天，在建立xDate的时候加完日期删掉
 	if(!isNaN(data[dataNameE[nowMonth]][i])){	// 如果这一天是个字符串则跳过这天
 		data.south.push(data[dataNameS[nowMonth]][i])
 		data.west.push(data[dataNameW[nowMonth]][i])
@@ -44,7 +44,12 @@ for(let i = 1; i <= day; i++) {
 		month++
 		today = 0
 	}
-	today = isNaN(data.east[i]) ? data.east[i].replace(/\d*,/, '') : today - 0 + 1	// 如果这一天是个字符串则跳到指定的天数
+	if(isNaN(data.east[i])) {	// 如果东这一天是个字符串则跳到指定的逗号后面的天数并删掉自己，否则就++
+		today = data.east[i].replace(/\d*,/, '')
+		data.east.splice(i, 1)
+	} else {
+		today = today - 0 + 1
+	}
 	xDate.push(month + '/' + today)
 }
 // 2/2号开始建立南北2区，加上1区人数，如果再建立3区再加上2区人数----------------------------------------

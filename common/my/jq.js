@@ -2,7 +2,7 @@
 // 注意:是先在全局范围内搜索给定的CSS选择器，然后过滤出哪些属于当前元素的子元素
 // 搞完列一遍所有的方法
 /*
-	$：获取单个元素
+	$：获取单个或多个元素，单个时没有length属性，需换成$$
 	$$：获取多个元素
 	el.on('type', fn)：元素绑定事件
 	el.index()：获取该元素是第几个
@@ -12,7 +12,10 @@
 	$.toast('text', duration = 2000)：提示框
 */
 
-const $ = el => document.querySelector(el)
+const $ = el => {
+	let res = document.querySelectorAll(el)
+	return res.length > 1 ? res : res[0]
+}
 const $$ = el => document.querySelectorAll(el)
 HTMLElement.prototype.fd = function(el) {
 	const res = this.querySelectorAll(el)

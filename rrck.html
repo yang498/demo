@@ -191,6 +191,7 @@
 		<script src="common/my/jq.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			$('.head li').on('mouseenter', function(){
+				console.log($('.head li, .body li'))
 				$('.head li, .body li').removeClass('active')
 				$(`.head li:nth-child(${this.index() + 1}), .body li:nth-child(${this.index() + 1})`).addClass('active')
 			})

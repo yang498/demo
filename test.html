@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>前端笔记</title>
+</head>
+
+<body>
+	<div id="abc">sss</div>
+	<div id="ccc">ccc</div>
+	<script src="common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        $('#ccc').on('click', function () {
+			$('#abc').attr({onclick:"aaa", oncontextmenu:"bbb"})
+		})
+    </script>
+</body>
+
+</html>

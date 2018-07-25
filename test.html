@@ -4,16 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <title>前端笔记</title>
+	<style type="text/css">
+		span.active {
+			color: #333;
+		}
+		div[class] {
+			color: #08f;
+		}
+	</style>
 </head>
 
 <body>
-	<div id="abc">sss</div>
-	<div id="ccc">ccc</div>
+	<div id="demo">
+		<div class="demo active" id="text">1<span class="active">.1</span></div>
+		<div class="demo">2</div>
+		<div class="demo">3</div>
+	</div>
+	
 	<script src="common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
     <script>
-        $('#ccc').on('click', function () {
-			$('#abc').attr({onclick:"aaa", oncontextmenu:"bbb"})
-		})
+        console.log($('[class*="acti"]'))
     </script>
 </body>
 

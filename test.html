@@ -5,25 +5,57 @@
     <meta charset="UTF-8">
     <title>前端笔记</title>
 	<style type="text/css">
-		span.active {
-			color: #333;
+		.focused {
+			background-color: #f80;
 		}
-		div[class] {
-			color: #08f;
+		#demo {
+			color: #ccc;
+			transition: 0.5s;
 		}
 	</style>
 </head>
 
 <body>
-	<div id="demo">
-		<div class="demo active" id="text">1<span class="active">.1</span></div>
-		<div class="demo">2</div>
-		<div class="demo">3</div>
+	<input type="button" tabIndex="1" value="222">
+		<div id="demo" class="ccc" style="transform: translateX(10px);">
+		<div class="demo active" id="text" tabIndex="1">1<span class="active" lang="fr"><i>.132</i></span></div>
+		<div class="demo text2" tabIndex="2">2</div>
+		<div class="demo" tabIndex="1">3</div>
 	</div>
+	<h1>12</h1>
+	<a href="#demo">试试</a>
+	<ul>
+		<li>A</li>
+		<li>B</li>
+		<li>C</li>
+		<li>D</li>
+	</ul>
+	<ul>
+		<p>P</p>
+		<li>E</li>
+		<p>P</p>
+		<li>F</li>
+		<li>G</li>
+		<li>H</li>
+	</ul>
+	<input type="text" disabled="false">
+	<input>
+	<button>123</button>
+	<select name="" id="" multiple="">
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+	</select>
 	
 	<script src="common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
     <script>
-        console.log($('[class*="acti"]'))
+		console.log($('#demo').css('transform'))
+		console.log($('#demo').attr('style'))
+		$(':button').on('click', function () {
+			$('#demo').toggleClass('add')
+			$('#demo').css('transform', )
+			console.log($('#demo').attr('style'))
+		})
     </script>
 </body>
 

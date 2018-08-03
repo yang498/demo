@@ -2,61 +2,61 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>前端笔记</title>
+	<meta charset="UTF-8">
+	<title>前端笔记</title>
 	<style type="text/css">
-		.focused {
-			background-color: #f80;
+		.demo {
+			width: 100px;
+			height: 20px;
+			border: 2px solid #ccc;
+			margin: 10px;
+			box-sizing: border-box;
+			transition: 1s;
+			position: relative;
 		}
-		#demo {
-			color: #ccc;
-			transition: 0.5s;
+
+		.active {
+			width: 120px;
+		}
+		
+		iframe {
+			width: 500px;
+			height: 200px;
 		}
 	</style>
 </head>
 
 <body>
-	<input type="button" tabIndex="1" value="222">
-		<div id="demo" class="ccc" style="transform: translateX(10px);">
-		<div class="demo active" id="text" tabIndex="1">1<span class="active" lang="fr"><i>.132</i></span></div>
-		<div class="demo text2" tabIndex="2">2</div>
-		<div class="demo" tabIndex="1">3</div>
+	<div class="demo">
+		<div class="first">
+			<div class="child"></div>
+		</div>
+		<div class="second"></div>
 	</div>
-	<h1>12</h1>
-	<a href="#demo">试试</a>
+	
 	<ul>
 		<li>A</li>
 		<li>B</li>
-		<li>C</li>
-		<li>D</li>
+		<li class="mark">C</li>
+		<li class="mark">D</li>
 	</ul>
-	<ul>
-		<p>P</p>
-		<li>E</li>
-		<p>P</p>
-		<li>F</li>
-		<li>G</li>
-		<li>H</li>
-	</ul>
-	<input type="text" disabled="false">
-	<input>
-	<button>123</button>
-	<select name="" id="" multiple="">
-		<option value="1">1</option>
-		<option value="2">2</option>
-		<option value="3">3</option>
-	</select>
 	
 	<script src="common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
-    <script>
-		console.log($('#demo').css('transform'))
-		console.log($('#demo').attr('style'))
-		$(':button').on('click', function () {
-			$('#demo').toggleClass('add')
-			$('#demo').css('transform', )
-			console.log($('#demo').attr('style'))
+	<script>
+		var reg = `
+			const r = /https:\/\/(www)*?123{2,6}/g
+			str.replace(/https:\/\/(www)*?123{2,6}/g, '<a href="$&">get</a>')
+		`
+		
+		//reg.replace(/\//)
+		
+		console.log($('li:first').is(function () {
+			return 0
+		}))	// C, D
+		$('ul').on('click', function (event) {
+			$(event.target).is('li') && $(event.target).css('color', 'red')
 		})
-    </script>
+	</script>
 </body>
 
 </html>

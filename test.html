@@ -43,16 +43,12 @@
 	
 	<script src="common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
 	<script>
-		var reg = `
-			const r = /https:\/\/(www)*?123{2,6}/g
-			str.replace(/https:\/\/(www)*?123{2,6}/g, '<a href="$&">get</a>')
-		`
+		var str = 'a  bc tbd'
+		str.replace(/a   /g, function (res) {
+			console.log(res)
+		})
 		
-		//reg.replace(/\//)
-		
-		console.log($('li:first').is(function () {
-			return 0
-		}))	// C, D
+		console.log()	// C, D
 		$('ul').on('click', function (event) {
 			$(event.target).is('li') && $(event.target).css('color', 'red')
 		})

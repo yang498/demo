@@ -1,80 +1,36 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <meta charset="UTF-8">
-    <title>前端笔记</title>
-    <link rel="shortcut icon" href="../../img/love.png" />
-    <style>
-        #web {
-            background-color: #08f;
-            padding: 20px;
-        }
+	<head>
+		<meta charset="UTF-8">
+		<title>vue</title>
+		<link rel="shortcut icon" href="../../img/love.png" />
+	</head>
 
-        input {
-            margin: 0 10px;
-            border: 1px solid #ccc;
-        }
-		
-		.list-item {
-			display: inline-block;
-			transition: 0.5s;
-			margin-right: 10px;
-		}
-		.fade-enter, .fade-leave-to {
-			opacity: 0;
-			transform: translateY(30px);
-		}
-		.fade-leave-active {
-			position: absolute;
-		}
-		
-		.flip-list-move {
-			transition: transform 1s;
-		}
-    </style>
-</head>
+	<body>
+		<div id="web">
+			<!--s-->
+			<blog-post title="sg">
+				{{msg}}
+			</blog-post>
+		</div>
 
-<body>
-    <div id="web">
-		<button @click="add">Add</button>
-		<button @click="remove">Remove</button>
-		<transition-group name="fade" tag="div" class="list">
-			<span v-for="item in arr" :key="item" class="list-item">{{item}}</span>
-		</transition-group>
-		
-		<button @click="shuffle">Shuffle</button>
-		<transition-group name="flip-list" tag="ul">
-			<li v-for="item in items" :key="item">{{ item }}</li>
-		</transition-group>
-    </div>
-
-    <script src="../../common/vue-2.5.16.js" type="text/javascript" charset="utf-8"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.1/lodash.min.js"></script>
-    <script type="text/javascript">
-        var vm = new Vue({
-            el: '#web',
-            data: {
-				items: [1,2,3,4,5,6,7,8,9],
-				arr: [1, 2, 3, 4, 5],
-				nextNum: 6
-            },
-			methods: {
-				shuffle: function () {
-					this.items = _.shuffle(this.items)
-				},
-				randomIndex() {
-					return Math.floor(Math.random() * this.arr.length)
-				},
-				add() {
-					this.arr.splice(this.randomIndex(), 0, this.nextNum++)
-				},
-				remove() {
-					this.arr.splice(this.randomIndex(), 1)
+		<script src="../../common/vue-2.5.16.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			Vue.component('blog-post', {
+			    template: `
+			    <div class="container" v-bind="$attrs">
+				  	<slot></slot>
+				</div>
+				`,
+			})
+			let vm = new Vue({
+				el: '#web',
+				data: {
+					msg: 'qwer'
 				}
-			}
-        })
-    </script>
-</body>
+			})
+		</script>
+	</body>
 
 </html>

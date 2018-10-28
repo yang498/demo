@@ -83,6 +83,7 @@
 	
 	<script src="../common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
+		const $banner = $('.banner')
 		const $imgs = $('.imgs')	// banner 容器
 		const $img = $('img')	// 每张图片
 		let index = -1	// 代表1000倍，初始为-1000
@@ -95,7 +96,7 @@
 		for (let i = 0; i < $img.length; i++) $('.nav').append(`<i ${i ? '' : 'class="active"'}></i>`)
 		
 		// 要么在倒数第二切到最后一张过渡完毕就瞬切到假第一张，要么在最后一张切到第一张前瞬切到假第一张
-		// 第一种方法需要在最后一张等待过渡完，难点在于在最后一张的过渡中再次点击的处理，需要清空等待的定时器，立刻切到下一张
+		// 第一种方法需要在最后一张等待过渡完，难点在于在最后一张的过渡中再次点击的处理，需要清空等待的定时器，立刻切到下一张，再重新计时，不推荐这种方法，既不好处理，计时也可能会有偏差
 		
 		// 第一种方法
 		const move1 = function () {
@@ -176,7 +177,7 @@
 		
 		// 定时切换，鼠标悬停暂停切换
 		timer = setInterval('$(".right").click()', 5000)
-		$imgs.hover(function () {
+		$banner.hover(function () {
 			clearInterval(timer)
 		}, function () {
 			timer = setInterval('$(".right").click()', 5000)

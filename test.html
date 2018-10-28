@@ -3,55 +3,110 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>前端笔记</title>
+	<title>希望前方的路</title>
 	<style type="text/css">
 		.demo {
 			width: 100px;
-			height: 20px;
+			height: 100px;
 			border: 2px solid #ccc;
 			margin: 10px;
 			box-sizing: border-box;
 			transition: 1s;
 			position: relative;
 		}
-
-		.active {
-			width: 120px;
+		
+		.pro {
+			width: 500px;
+			height: 20px;
+			border-radius: 5px;
+			background-color: #08f;
+			overflow: hidden;
+			background-image: linear-gradient(-45deg,
+				rgba(255,255,255,.5) 25%,
+				transparent 25%,
+				transparent 50%,
+				rgba(255,255,255,.5) 50%,
+				rgba(255,255,255,.5) 75%,
+				transparent 75%,
+				transparent);
+		}
+		/*repeating-linear-gradient*/
+		
+		.item2 {
+			width: 100%;
+			height: 100%;
+			background-color: #08f;
+			transform: translateX(-100%);
+			animation: pro 5s linear forwards;
 		}
 		
-		iframe {
-			width: 500px;
-			height: 200px;
+		@keyframes pro2{
+			to{ transform: translateX(0); }
 		}
 	</style>
 </head>
 
 <body>
+	100
 	<div class="demo">
 		<div class="first">
 			<div class="child"></div>
 		</div>
-		<div class="second"></div>
+		<p class="second"></p>
+		<p class="third"></p>
+		<div class="fourth"></div>
 	</div>
+	<div class="pro">
+		<div class="item"></div>
+	</div><div class="red blue">123</div>
+<div class="blue red">123</div>
 	
-	<ul>
-		<li>A</li>
-		<li>B</li>
-		<li class="mark">C</li>
-		<li class="mark">D</li>
-	</ul>
-	
-	<script src="common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
+	<!--<script src="common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>-->
 	<script>
-		var str = 'a  bc tbd'
-		str.replace(/a   /g, function (res) {
-			console.log(res)
-		})
+		console.log('别再让自己被动到妥协')
 		
-		console.log()	// C, D
-		$('ul').on('click', function (event) {
-			$(event.target).is('li') && $(event.target).css('color', 'red')
-		})
+		// access_token 是公众号的全局唯一接口调用凭据，要存储至少需 512 个字符空间，有效期为 2 小时，所以需定时刷新，重复获取将覆盖上次的
+		const getAccessToken = function () {
+			$.ajax({
+				url: 'https://api.weixin.qq.com/cgi-bin/token',
+				data: {
+					grant_type: 'client_credential',
+					appid: 'wx11174b0cb97e5408',	// 小程序 ID
+					secret: '10194a8bf306b73dd592845c7d7eb060'	// 小程序密钥
+				},
+				dataType: 'jsonp',
+				contentType: "application/json",
+				success: function (res) {
+					console.log(res)
+				}
+			})
+		}
+		
+		const msg = function () {
+			// 注册成功提醒
+			$.post('https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send', {
+				access_token: '13_txIm1b8_TAlXRnQvvPB1QZnUI1OTh2x0aXQLbnVeZIY0SrUJHQ3xSEN0juAusBle52D-E7zIMMUBqDKNo6_MkuhZEk0QA1B2FF13FOM4PwUi3O_XsKsp_iVgIYoABSgAFAGHY',
+				touser: 'oh9H90Hr7PJTYNBwAS862SdviyhM',	// 用户 openId
+				template_id: 'NMHtgr6fG2H7DssV_rfPzzhcQQqXDrt6hezcyPYuje0',	// 模板 ID
+				form_id: '1535079171185',	// 提交表单的 formId 或 支付的 prepay_id，有效期 7 天，一个 formId 只能用 1 次，一个 prepay_id 能用 3 次
+				data: {
+					keyword1: {	// 姓名
+			        	value: 'yy'
+			    	},
+					keyword2: {	// 手机
+			        	value1: '166 6666 6666',
+			        	value2: '134 5555 6666'
+			    	},
+			    	keyword3: 'YYcompany'	// 公司名称
+				},
+				emphasis_keyword: 'keyword1.DATA'	// 强调
+			}, function (res) {
+				console.log(res)
+			})
+		}
+		
+		//getAccessToken()
+		//msg()
 	</script>
 </body>
 

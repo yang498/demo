@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			.banner {
+				width: 1000px;
+				margin: 0 auto;
+				overflow: hidden;
+				position: relative;
+			}
+			.banner:hover .arrow {
+				display: block;
+			}
+			.imgs {
+				width: 7000px;
+				font-size: 0;
+			}
+			img {
+				width: 1000px;
+			}
+			.arrow {
+				display: none;
+				width: 50px;
+				height: 100%;
+				line-height: 333px;
+				font-size: 30px;
+				text-align: center;
+				color: #fff;
+				background-color: rgba(0,0,0,0.2);
+				transition-duration: 0.2s;
+				cursor: pointer;
+				position: absolute;
+				top: 0;
+			}
+			.arrow:hover {
+				background-color: rgba(0,0,0,0.4);
+			}
+			.left {
+				left: 0;
+			}
+			.right {
+				right: 0;
+			}
+			.nav {
+				display: flex;
+				position: absolute;
+				left: 50%;
+				bottom: 15px;
+				transform: translateX(-50%);
+			}
+			.nav i {
+				width: 15px;
+				height: 15px;
+				border-radius: 50%;
+				background-color: rgba(0,0,0,0.5);
+				margin: 0 5px;
+				transition: 0.2s;
+				cursor: pointer;
+			}
+			.nav i:hover, .nav i.active {
+				background-color: #f80;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="banner">
+			<div class="imgs">
+				<img src="../img/banner1.jpg" />
+				<img src="../img/banner2.jpg" />
+				<img src="../img/banner3.jpg" />
+				<img src="../img/banner4.jpg" />
+				<img src="../img/banner5.jpg" />
+			</div>
+			<div class="arrow left">&lt;</div>
+			<div class="arrow right">&gt;</div>
+			<div class="nav"></div>
+		</div>
+		
+		<script src="../common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			const $banner = $('.banner')
+			const $imgs = $('.imgs')	// banner 容器
+			const $img = $('img')	// 每张图片
+			let index = -1	// 代表1000倍，初始为-1000
+			let timer = null
+			
+			//for (let i = 0; i < $img.length; i++) $('.nav').append(`<i ${i ? '' : 'class="active"'}></i>`)
+			
+			
+			// 把 banner 图片分成 3 种状态，左边 中间 右边
+			
+			// 初始化把最后1张放到第一张左边
+			
+			const move2 = function (noTransition) {
+				// 在最后一张切到第一张前瞬切到假第一张
+				if (index === -5) {
+					index = 0	// 避免死循环先改变需要判断的 index
+					move2(true)
+					$imgs.css('transform')	// 没有这行代码的话还是会过渡
+					// 虽然瞬切时过渡时间为0，但是执行下面的代码时是有过渡的，浏览器为了“省事”原则而跳过了0的过渡，直接从最后过渡到第一张
+					// .css()的原生代码是window.getComputedStyle()，即获取样式属性的计算值，所以有了一次获取中断，浏览器就不会跳过
+					// alert和其他弹窗方法也能做到，但总不能让人家点一次弹窗吧
+					// 暂时还没发现其他可以暂停的方法，.css()仍然是个不错的方式
+				}
+				
+				// 控制 index 进行切换
+				noTransition || index--
+				$imgs.css({
+					'transform': `translateX(${index * 1000}px)`,
+					'transition': index === 0 ? '0s' : '0.4s'
+				})
+			}
+			
+//			const banner = function (direction, noTransition) {
+//				// 先判断是不是点击导航圆点，如果是就直接执行切换
+//				if (typeof direction === 'boolean') {
+//					// 在第一张前和最后一张瞬切前切换到假的那一张
+//					if (index === (direction ? -5 : -1)) {
+//						index = direction ? 0 : -6	// 避免死循环先改变需要判断的 index
+//						banner(direction, true)
+//						$imgs.css('transform')	// 没有这行代码的话还是会过渡
+//					}
+//					
+//					// 控制 index，有 noTransition 说明需要瞬切，index 已赋值，可以跳过
+//					noTransition || (direction ? index-- : index++)
+//					
+//					// 切换导航小圆点
+//					$('.nav i').removeClass('active').eq(~index).addClass('active')
+//				}
+//				
+//				// 根据 index 进行切换相应的距离和
+//				$imgs.css({
+//					'transform': `translateX(${index * 1000}px)`,
+//					'transition':  index === (direction ? 0 : -6) ? '0s' : '0.4s'
+//				})
+//			}
+			
+			// 左右箭头和导航小圆点点击事件
+//			$('.left').on('click', function () {
+//				banner(false)
+//			})
+//			$('.right').on('click', function () {
+//				banner(true)
+//			})
+//			$('.nav i').on('click', function () {
+//				if (index !== ~$(this).index()) {
+//					$('.nav i').removeClass('active')
+//					$(this).addClass('active')
+//					index = ~$(this).index()
+//					banner()
+//				}
+//			})
+			
+			// 定时切换，鼠标悬停暂停切换
+//			timer = setInterval('$(".right").click()', 5000)
+//			$banner.hover(function () {
+//				clearInterval(timer)
+//			}, function () {
+//				timer = setInterval('$(".right").click()', 5000)
+//			})
+		</script>
+	</body>
+</html>

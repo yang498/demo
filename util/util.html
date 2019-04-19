@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>临时做数据转换</title>
+		<style type="text/css">
+			#yy-btn {
+				width: 200px;
+				line-height: 50px;
+				text-align: center;
+				font-size: 20px;
+				font-weight: bold;
+				cursor: pointer;
+				transition-duration: 0.2s;
+				margin: 20px auto;
+				color: #fff;
+				background: #00b4fd;
+				border-radius: 5px;
+				position: relative;
+				z-index: 6;
+			}
+			#yy-btn:hover {
+				background: #00a0e9;
+				box-shadow: 0 3px 2px 0 rgba(0,0,0,0.5);
+			}
+			#yy-download {
+				position: fixed;
+				top: -100px;
+			}
+			p {
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<a id="yy-download">下载</a>
+		<div id="yy-btn">导 出</div>
+
+		<script src="../common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+		    let table = {}
+		    const th = '区域,省份,城市,公司名称,地址,品牌,主营信息,座机,姓名,手机'
+
+		    // 下载
+		    const done = t => {
+		        const html = `
+				    <html>
+	      				<head>
+	        				<meta charset='utf-8' />
+	        				<style type="text/css">
+								table { font-family: "微软雅黑"; border-collapse: collapse; }
+								tr { text-align: center; }
+								thead th { color: #fff; background-color: #00b0f0; font-weight: bold; }
+								th, td { height: 30px; border: 1px solid #000; }
+							</style>
+				      	</head>
+				      	<body>
+				        	<table>
+								<thead>
+									<tr><th>${th.replace(/,/g, '</th><th>')}</th></tr>
+								</thead>
+								<tbody>
+									${[...new Set(t)].map(item => '<tr><td>' + item.replace(/\^/g, '</td><td>') + '</td></tr>').join('')}
+								</tbody>
+							</table>
+				      	</body>
+				    </html>
+				`
+		        const href = URL.createObjectURL(new Blob([html], {type: 'application/vnd.ms-excel'}))
+		        $('#yy-download').attr('href', href)
+		        $('#yy-download')[0].click()
+		    }
+
+		    // 分区
+		    const areaEast = /安徽省?|江苏省?|上海市?|浙江省?/
+		    const areaSouth = /福建省?|广东省?|广西[^]*|海南省?|湖南省?|江西省?/
+		    const areaWest = /重庆市?|甘肃省?|贵州省?|湖北省?|宁夏[^]*|青海省?|陕西省?|四川省?|新疆[^]*|西藏[^]*|云南省?/
+		    const areaNorth = /北京市?|河北省?|河南省?|黑龙江省?|吉林省?|辽宁省?|内蒙古[^]*|山东省?|山西省?|天津市?/
+		    const getArea = pro => areaEast.test(pro) ? '东区' : areaSouth.test(pro) ? '南区' : areaWest.test(pro) ? '西区' : '北区'
+
+			const ex = () => {
+				let ts = Object.entries(table)
+				let i = 0
+				const timer = () => {
+					$('a').attr('download', ts[i][0] + '.xls')
+					ts[i][1].sort((a, b) => a.localeCompare(b, 'zh-Hans-CN'))
+					done(ts[i][1])
+					if (i < ts.length) {
+						$('#yy-btn').after(`<p>${i + 1}/${ts.length} ${ts[i][0]} ✔</p>`)
+	    				i++
+	    				setTimeout(timer, 500)
+	    			}
+				}
+				timer()
+			}
+
+		    // 转换
+		    $('#yy-btn').click(function () {
+		    	$.get('4s.xml', res => {
+		    		$('#yy-btn').after('<p>读取完成，开始合并</p>')
+		    		const $tables = $(res).find('Worksheet')
+		    		let i = 0
+		    		const timer = () => {
+		    			$tables.eq(i).find('Row:not(:first)').each(function () {
+	    					const item = $(this).find('Data').map((index, item) => $(item).text()).get()
+	    					if (item.length > 0) {
+		    					if (table[item[5]]) {
+		    						if (isNaN(item[3])) {
+		    							// 省，区（内3），双市，西藏新疆
+		    							let pro = ''
+		    							let city = ''
+		    							if (/西藏|新疆/.test(item[3].slice(0, 2))) {
+		    								pro = item[3].slice(0, 2)
+		    								city = item[3].slice(2, -1)
+		    							} else if (item[3].match(/市/g) && item[3].match(/市/g).length > 1) {
+		    								pro = item[3].slice(0, 2)
+		    								city = item[3].slice(3, -1)
+		    							} else if (item[3].includes('区')) {
+		    								pro = item[3].slice(0, 2)
+		    								if (pro === '内蒙') pro = '内蒙古'
+		    								city = item[3].match(/(?<=区)[^]+(?=市)/) ? item[3].match(/(?<=区)[^]+(?=市)/)[0] : 'NULL'
+		    							} else {
+		    								pro = item[3].match(/[^]+(?=省)/) ? item[3].match(/[^]+(?=省)/)[0] : 'NULL'
+		    								city = item[3].match(/(?<=省)[^]+(?=市)/) ? item[3].match(/(?<=省)[^]+(?=市)/)[0] : 'NULL'
+		    							}
+		    							table[item[5]].push([getArea(pro), pro, city, item[0], ...item.slice(4)].join('^'))
+		    						} else {
+		    							table[item[5]].push([getArea(item[1]), item[1], item[2], item[0], ...item.slice(4)].join('^'))
+		    						}
+		    					} else {
+		    						table[item[5]] = []
+		    					}
+	    					}
+		    			})
+		    			if (i < $tables.length) {
+		    				$('#yy-btn').after(`<p>${i + 1}/${$tables.length}</p>`)
+		    				i++
+		    				setTimeout(timer, 500)
+		    			} else {
+		    				$('#yy-btn').after('<p>合并完成，开始导出</p>')
+		    				ex()
+		    			}
+		    		}
+		    		setTimeout(timer, 500)
+		    	})
+	        })
+		</script>
+	</body>
+</html>

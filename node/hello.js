@@ -1,3 +1,5 @@
+// 后端：搭建服务、接收请求、转换数据、存储更改数据
+
 var http = require('http') // 引入http模块
 var url = require('url') // 引入url模块
 http.createServer(function(request, response) { // 创建服务器

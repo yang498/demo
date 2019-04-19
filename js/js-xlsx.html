@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>表格</title>
+		<style type="text/css">
+			#img {
+				display: block;
+				width: 200px;
+			}
+		</style>
+	</head>
+	<body>
+		<input id="file" type="file"/>
+		<img id="img"/>
+
+		<script src="../common/xlsx.core.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			const {log} = console
+			const $file = document.querySelector('#file')
+			const $img = document.querySelector('#img')
+			$file.onchange = function () {
+				const reader = new FileReader()
+			    if (this.files[0]) reader.readAsBinaryString(this.files[0])
+			    reader.onload = () => {
+			    	const excel = XLSX.read(reader.result, {type: 'binary'})
+			    	log(excel)
+			    }
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>下载测试</title>
+		<style type="text/css">
+			table { font-family: "微软雅黑"; border-collapse: collapse; }
+			tr { text-align: center; }
+			thead th { color: #fff; background-color: #00b0f0; font-weight: bold; }
+			th, td { height: 30px; border: 1px solid #000; }
+		</style>
+	</head>
+
+	<body>
+		<div id="y" onclick="ex()">download</div>
+
+		<script src="../common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			const th = '区域,省份,城市,公司名称,地址,品牌,主营信息,座机,姓名,手机'
+			const td = [
+				'北区,河北,保定,保定轩宇英华汽车销售服务有限公司,保定市高开区创业路368号,MG,上汽荣威 MG,0312-3100155,戴经理,13231297331',
+				'北区,河北,保定,保定轩宇英华汽车销售服务有限公司定州MG店,河北省定州市清风北路(原造纸厂对面),MG,暂无主营信息,0321-2681914,大客户经理,NULL'
+			]
+			$('#y').before(`<table>
+				<thead>
+					<tr><th>${th.replace(/,/g, '</th><th>')}</th></tr>
+				</thead>
+				<tbody>
+					${td.map(item => '<tr><td>' + item.replace(/,/g, '</td><td>') + '</td></tr>').join('')}
+				</tbody>
+			</table>`)
+			const ex = () => {
+				const excelHtml = `
+				    <html>
+	      				<head>
+	        				<meta charset='utf-8' />
+	        				${document.querySelector('style').outerHTML}
+				      	</head>
+				      	<body>
+				        	${document.querySelector('table').outerHTML}
+				      	</body>
+				    </html>
+				`
+				const excelBlob = new Blob([excelHtml], { type: 'application/vnd.ms-excel' })
+				let oA = document.createElement('a')
+				oA.href = URL.createObjectURL(excelBlob)
+				oA.download = 'e.xls'
+				oA.click()
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			div{
+				width: 20px;
+				height: 100px;
+				background: #f08;
+			}
+		</style>
+		<link rel="stylesheet" type="text/css" href="./common/reset.css">
+	</head>
+	<body>
+		
+		<div data-name='aa' data-sex = "nn"></div>
+		<!--<input type="checkbox" checked="checked"/>-->
+		<!--<button>666</button>-->
+		<!--<script src="js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>-->
+		<script type="text/javascript">
+//			var $='ooo';	//$被占用
+//			
+//			jQuery('div');	//用jQuery代替（简单粗暴，但略显麻烦）
+//			(function($){	//闭包传参代替，阻止外部占用的影响
+//				$('div');
+//			})(jQuery);
+//			var jq=jQuery.noConflict();	//jQuery自带自定义变量方法
+
+			$('input').on('click',function(){
+				console.log($(this).attr('checked'));//单纯拿字符串
+				console.log($(this).prop('checked'));//专拿单属性，获取状态的布尔值
+			});
+			//attr只能把选中状态删除，再添加也不能改为选中状态
+//			控制单属性,prop比attr更灵活
+			$('button').on('click',function(){
+//				var tt=$('input').prop('checked');
+//				$('input').prop('checked',!tt);
+				$('input').attr('checked')?$('input').removeAttr('checked'):$('input').attr('checked',true);
+			});
+			
+			//调用函数只会作用于原来的地方，在这个地方调用，并不是把函数拿过来用
+			var bgg='bgg';
+			function hh(){
+				console.log(bgg);
+			}
+			function gg(){
+				var bgg=66;
+				hh();
+			}
+			gg();
+			
+//			setInterval(function(){
+				//不是json必须要引号，是而且不是严格模式就随便加不加引号
+											//下标值，原来的值
+				$('div').css('width',function(i,oldvalue){
+					return parseInt(oldvalue)*(i+1);//因为是函数，所以要return出去才能设置
+				});
+//			},10);
+			
+			//有滚动条才会有scrollTop，不然都是0
+			//原生dataset会改变标签里面的data值
+			//jq.data不会改变标签里面的data值
+			console.log($('div').data());//一次拿第一个所有的data
+			console.log($('div').data().name);
+			console.log($('div').data('name'));
+			$('div').data('name','bb');//设置   打印原型__proto__要两个下划线
+			console.log($('div').data('name'));
+			$('div')[0].dataset.name='dd';
+			console.log($('div')[0].dataset);
+			
+//			clone()一个true为复制本身的事件，两个为包括子元素的事件
+
+//			自定义筛选条件，返回符合条件的true
+//			$('ul li').filter(function(i,el){
+//				return i%2==1;	//奇数列
+//				return $(this).text()=='0005';	//符合内容
+//				return true;	//全都可以
+//			}).css('font-size':'30px');
+			
+			//children找子元素，find所有子孙元素
+			//事件委托包括settimeout几秒之后也有事件
+			//时间戳从页面加载开始计时e.timeStamp
+			//offsetX相对于元素左上角边框以内
+			//pageX相对于文档左上角
+			//clientX相对于浏览器左上角
+			//screenX相对于屏幕左上角
+			
+			//index()默认为同级别中的位置，index(‘div’),所有div的第几个不论级别，就是可以自定义找位置，没找到就为-1
+			//fade系列会改变display值none和显示
+			//各个动画都支持回调
+//			$('div').fadeOut(2000,function(){
+//				alert('执行完毕')
+//			});
+//			animate:动画时间默认400
+			$('div').animate({
+				width:'+=500',
+				height:'toggle'//从现在到0之间切换
+			},5000,'swing',function(){
+				console.log('ok');
+			}).animate(
+			{
+				marginTop:100,
+				all:720		//自定义
+			},
+			{
+				queue:false,//动画同步执行不排队，动画时间写在外面无效
+				duration:5000,
+				complete:function(){
+					//动画完成执行函数
+					console.log('没毛病');
+				},
+				//now:接受全部动画运动的值，状态
+				step:function(now,tween){
+					if(tween.prop=='all'){
+						$(this).css('transform','rotate('+now+'deg)');
+					}
+				},
+//					p动画完成的百分比，*100%
+				progress:function(k,p,r){
+					if(p>0.5){
+						$('this').stop();
+					}
+				},
+				//分别定义动画曲线
+				specialEasing:{
+					width:'linear',
+					height:'swing'
+				},
+				done:{
+					//动画完成
+				},
+				fail:{
+					//动画失败
+				},
+				always:{
+					//在动画完成或未完成情况下停止时执行的函数。(他的Promise对象状态已完成或未完成)。
+				}
+			});
+		</script>
+	</body>
+</html>

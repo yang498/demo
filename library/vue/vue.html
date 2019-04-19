@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 
+<<<<<<< HEAD
 <head>
     <meta charset="UTF-8">
     <title>前端笔记</title>
@@ -47,5 +48,38 @@
         })
     </script>
 </body>
+=======
+	<head>
+		<meta charset="UTF-8">
+		<title>vue</title>
+		<link rel="shortcut icon" href="../../img/love.png" />
+	</head>
+
+	<body>
+		<div id="web">
+			<!--s-->
+			<blog-post title="sg">
+				{{msg}}
+			</blog-post>
+		</div>
+
+		<script src="../../common/vue-2.5.16.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			Vue.component('blog-post', {
+			    template: `
+			    <div class="container" v-bind="$attrs">
+				  	<slot></slot>
+				</div>
+				`,
+			})
+			let vm = new Vue({
+				el: '#web',
+				data: {
+					msg: 'qwer'
+				}
+			})
+		</script>
+	</body>
+>>>>>>> 40fdc14e3c293d93a282e6c70fdf5eca4c9796a2
 
 </html>

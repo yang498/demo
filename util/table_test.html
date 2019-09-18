@@ -14,6 +14,7 @@
 
 	<body>
 		<div id="y" onclick="ex()">download</div>
+		<div id="y" onclick="yy()">打印根据省市判断区域</div>
 
 		<script src="../common/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
@@ -47,6 +48,17 @@
 				oA.href = URL.createObjectURL(excelBlob)
 				oA.download = 'e.xls'
 				oA.click()
+			}
+			const yy = () => {
+				const east = ['安徽', '江苏', '上海', '浙江']
+				const south = ['福建', '广东', '广西', '海南', '湖南', '江西']
+				const north = ['北京', '河北', '河南', '黑龙江', '吉林', '辽宁', '内蒙古', '山东', '山西', '天津']
+				const east2 = ['安徽省', '江苏省', '上海市', '浙江省']
+				const south2 = ['福建省', '广东省', '广西壮族自治区', '海南省', '湖南省', '江西省']
+				const north2 = ['北京市', '河北省', '河南省', '黑龙江省', '吉林省', '辽宁省', '内蒙古自治区', '山东省', '山西省', '天津市']
+				const condition = arr => 'OR(' + arr.map(i => 'B2="' + i + '"').join(', ') + ')'
+				const res = `=IF(${condition(east2)}, "东区", IF(${condition(south2)}, "南区", IF(${condition(north2)}, "北区", "西区")))`
+				console.log(res)
 			}
 		</script>
 	</body>

@@ -1,32 +1,137 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>表格</title>
-		<style type="text/css">
-			#img {
-				display: block;
-				width: 200px;
-			}
-		</style>
-	</head>
-	<body>
-		<input id="file" type="file"/>
-		<img id="img"/>
 
-		<script src="../common/xlsx.core.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript">
-			const {log} = console
-			const $file = document.querySelector('#file')
-			const $img = document.querySelector('#img')
-			$file.onchange = function () {
-				const reader = new FileReader()
-			    if (this.files[0]) reader.readAsBinaryString(this.files[0])
-			    reader.onload = () => {
-			    	const excel = XLSX.read(reader.result, {type: 'binary'})
-			    	log(excel)
-			    }
+<head>
+	<meta charset="UTF-8">
+	<title>表格</title>
+	<style type="text/css">
+		#img {
+			display: block;
+			width: 200px;
+		}
+
+		table {
+			font-family: "微软雅黑";
+			border-collapse: collapse;
+		}
+
+		tr {
+			text-align: center;
+		}
+
+		thead th {
+			color: #fff;
+			background-color: #00b0f0;
+			font-weight: bold;
+		}
+
+		th,
+		td {
+			height: 30px;
+			border: 1px solid #000;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="demo">下载表格</div>
+	<input id="file" type="file" />
+	<img id="img" />
+	<table>
+		<tr>
+			<th>a</th>
+			<th>b</th>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>2</td>
+		</tr>
+	</table>
+
+	<script src="../common/xlsx.core.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		const [$, { log }] = [document.querySelector.bind(document), console]
+		$('#file').onchange = function () {
+			const reader = new FileReader()
+			if (this.files[0]) reader.readAsBinaryString(this.files[0])
+			reader.onload = () => {
+				const excel = XLSX.read(reader.result, { type: 'binary' })
+				const sheet1 = excel.Sheets[excel.SheetNames[0]]
+				log(XLSX.utils.sheet_to_json(sheet1))
+				log(XLSX.utils.sheet_to_html(sheet1))
 			}
-		</script>
-	</body>
+		}
+		const ex = et => {
+			// 转换成可下载的 blob 对象
+			const type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+			const url = URL.createObjectURL(new Blob([et], {type}))
+			// 用 a 链接下载
+			const a = document.createElement('a')
+			a.href = url
+			a.download = '用户表'
+			a.click()
+		}
+		$('.demo').onclick = function () {
+			// const wb = XLSX.utils.table_to_book($('table'), {sheet: "Sheet JS"})
+			// XLSX.writeFile(wb, 'test.xlsx')
+			const th = '姓名 性别 年龄'
+			const table = [
+				'李雷|男|22',
+				'韩梅梅|女|20'
+			]
+			const html = `
+				<html>
+						<head>
+							<meta charset='utf-8' />
+							<style type="text/css">
+								table { font-family: "微软雅黑"; border-collapse: collapse; }
+								tr { text-align: center; }
+								thead th { color: #fff; background-color: #00b0f0; font-weight: bold; }
+								th, td { height: 30px; border: 1px solid #000; }
+							</style>
+						</head>
+						<body>
+							<table>
+								<thead>
+									<tr><th>${th.replace(/ /g, '</th><th>')}</th></tr>
+								</thead>
+								<tbody>
+									${table.map(item => '<tr><td>' + item.replace(/\|/g, '</td><td>') + '</td></tr>').join('')}
+								</tbody>
+							</table>
+						</body>
+				</html>
+			`
+
+			//const res = html.split('').map(item => String.fromCharCode(item)).join('')
+			const res = XLSX.write(html, { bookType: 'xlsx', type: 'binary' })
+			ex(res)
+			return false
+			// 数据
+			const arr = [
+				['姓名', '性别', '年龄', '注册时间'],
+				['李雷', '男', 22, new Date],
+				['韩梅梅', '女', 20, new Date]
+			]
+			// 转换成表对象，格式和 XLSX.utils.sheet_to_json 返回的一样
+			const excel = {
+				SheetNames: ['sheet1'],
+				Sheets: {
+					sheet1: XLSX.utils.aoa_to_sheet(arr)
+				}
+			}
+			// 转换成表格格式的字符串数据
+			const data = XLSX.write(excel, { bookType: 'xlsx', type: 'binary' })
+			// 转换成 ArrayBuffer
+			let buf = new ArrayBuffer(data.length) // 创建一段二进制数据
+			let view = new Uint8Array(buf) // 通过 TypedArray 中的 Uint8Array 来修改 ArrayBuffer
+			for (let i = 0; i < data.length; ++i) view[i] = data.charCodeAt(i) & 0xFF
+			ex(buf)
+
+			// ？？一定要转换成表对象格式吗，XLSX.write()的说明，转换成 ArrayBuffer 的原理
+			// 有没有可能和直接 blob 只差了转换成 ArrayBuffer 这步，那反过来读取表格是不是也这样呢
+		}
+	</script>
+</body>
+
 </html>

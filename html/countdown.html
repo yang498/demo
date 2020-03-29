@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>倒计时</title>
+    <style>
+        :root {
+            --blue: #08f;
+            --pink: #f08;
+            --green: #0c0;
+            --bc: #aaa;
+            --bgc: #ddd;
+        }
+        * { box-sizing: border-box; }
+        body { text-align: center; padding: 0 100px; }
+        .text { font-weight: bold; font-size: 20px; line-height: 40px; margin-top: 10px; }
+        .progress { border-radius: 8px; background-color: var(--bgc); overflow: hidden; }
+        .bar {
+            width: 0;
+            height: 16px;
+            background-image: linear-gradient(45deg,
+                transparent 25%, rgba(255, 255, 255, 0.4) 25% 50%,
+                transparent 50% 75%, rgba(255, 255, 255, 0.4) 75%
+            );
+            background-size: 16px; /* size 和 height 相等，缩小后由 background-repeat 填满 */
+            animation: progress 1s linear infinite;
+            font-size: 12px;
+            color: #fff;
+            text-shadow: 0 0 2px #000;
+        }
+        @keyframes progress {
+            to { background-position-x: 16px; } /* 位移一个 background-size 距离作为一个周期 */
+        }
+        .today + .progress .bar { background-color: var(--blue); }
+        .year + .progress .bar { background-color: var(--pink); }
+        .life + .progress .bar { background-color: var(--green); }
+        ul {
+            margin-top: 30px;
+            padding-left: 0;
+            list-style-type: none;
+            display: flex;
+            flex-wrap: wrap;
+            border-top: 1px solid var(--bc);
+            border-left: 1px solid var(--bc);
+        }
+        li {
+            width: 10%;
+            height: 80px;
+            border-right: 1px solid var(--bc);
+            border-bottom: 1px solid var(--bc);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        li div:first-child { align-self: flex-end; }
+        li div:last-child { align-self: flex-start; }
+        li.past { background-color: var(--bgc); }
+        @media screen and (max-width: 999px) {
+            body { padding: 0 20px; }
+            li { width: 20%; }
+            li:nth-child(-n + 5) { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <p>如果站在终点的角度去看，例如 30 岁、生命的尽头、宇宙的尘埃</p>
+    <p>时间是有限的，游戏视频已经体验足够，该干正事了</p>
+    <p>平静，极简，选择，学习，专业，就现在</p>
+
+    <!-- 今日 -->
+    <div class="text today"></div>
+    <div class="progress">
+        <div class="bar"></div>
+    </div>
+
+    <!-- 今年 -->
+    <div class="text year"></div>
+    <div class="progress">
+        <div class="bar"></div>
+    </div>
+
+    <!-- 今生 -->
+    <div class="text life"></div>
+    <div class="progress">
+        <div class="bar"></div>
+    </div>
+
+    <!-- 网格 -->
+    <ul></ul>
+
+    <script>
+        const $ = document.querySelector.bind(document)
+        const date = new Date()
+        const fullYear = date.getFullYear()
+        const getP = n => (n * 100).toFixed(2) + '%'
+        const timeOf24h = 24 * 60 * 60 * 1000
+        const isLeapYear = y => y % 4 === 0 && y % 100 !== 0 || y % 400 === 0
+        const thisYearDays = isLeapYear(fullYear) ? 366 : 365
+        const timeOf1y = timeOf24h * thisYearDays
+        let yearPro = ''
+
+        // 今日
+        ;(() => {
+            // 当前时间 - 今天 00:00 = 今天已过时间，24h - 已过时间 = 今天剩余时间
+            let remainTime = timeOf24h - (date - new Date(date.toDateString())) + 1000
+            const add0 = n => n > 9 ? n : '0' + n
+            const countdown = () => {
+                const Rhour = Math.floor(remainTime / 1000 / 60 / 60 % 24)
+                const Rminute = Math.floor(remainTime / 1000 / 60 % 60)
+                const Rsecond = Math.floor(remainTime / 1000 % 60)
+                $('.today').innerText = '今日剩余 ' + [Rhour, Rminute, Rsecond].map(add0).join(':')
+                $('.today + .progress .bar').style.width = $('.today + .progress .bar').innerText = getP(1 - remainTime / timeOf24h)
+            }
+            countdown()
+            setInterval(() => {
+                if (remainTime > 0) {
+                    remainTime -= 1000
+                    countdown()
+                } else {
+                    location.reload()
+                }
+            }, 1000)
+        })()
+
+        // 今年
+        ;(() => {
+            // 当前时间 - 今年 00:00 = 今年已过时间，1y - 已过时间 = 今年剩余时间
+            let remainTime = timeOf1y - (date - new Date(fullYear + ''))
+            const days = Math.floor(remainTime / 1000 / 60 / 60 / 24)
+            yearPro = getP(1 - days / thisYearDays)
+            $('.year').innerText = '今年剩余 ' + days + ' 天'
+            $('.year + .progress .bar').style.width = $('.year + .progress .bar').innerText = yearPro
+        })()
+
+        // 今生
+        ;(() => {
+            // 当前时间 - 1996 = 今生已过时间，2077 - 已过时间 = 今生剩余时间
+            const timeOf1996 = new Date('1996/10/09')
+            const timeOf2077 = new Date('2077/10/09') - timeOf1996
+            const years = 2077 - fullYear
+            const p = getP((date - timeOf1996) / timeOf2077)
+            $('.life').innerText = '今生剩余 ' + years + ' / 81 年'
+            $('.life + .progress .bar').style.width = $('.life + .progress .bar').innerText = p
+        })()
+
+        // 网格
+        ;(() => {
+            const $li = n => [...Array(n)].map(() => '<li></li>').join('')
+            $('ul').innerHTML = $li(5) + [...Array(82)].map((n, i) => {
+                const y = i + 1996
+                return `<li
+                    class="${y < fullYear ? 'past' : y === fullYear ? 'now' : 'future'}"
+                    ${y === fullYear ? `style="background-image: linear-gradient(90deg, #f088 ${yearPro}, transparent ${yearPro})"` : ''}
+                >
+                    <div>${i}</div>
+                    <div>${y}</div>
+                </li>`
+            }).join('') + $li(3)
+        })()
+    </script>
+</body>
+</html>

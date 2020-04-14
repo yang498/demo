@@ -7,20 +7,19 @@
 </head>
 <body>
 <script>
-// 微信红包：每次的金额最小为 0.01，最大为剩余金额 / 剩余数量的 2 倍
-// sum 总数，length 个数，isRandom 随机或平均
+// 微信红包：sum 总数，length 个数，isRandom 随机或平均
 const wxrp = (sum, length, isRandom = true) => {
     const oSum = sum
     const min = 0.01
-    const fix2 = n => (Math.floor(n * 100) / 100).toFixed(2) - 0 // toFixed 四舍可以，五入会超出
-    const toFixed = n => n.toFixed(2) - 0
+    const fix2 = n => (Math.floor(n * 100) / 100).toFixed(2) - 0 // 只保留 2 位小数，生成随机数时使用
+    const toFixed = n => n.toFixed(2) - 0 // 四舍五入保留 2 位小数，处理余数时使用
     let array = []
 
     if (sum / length < 0.01) return console.warn(`${sum} 元，分 ${length} 份，每个人一分钱都分不了`)
 
     if (isRandom) {
         array = [...Array(length - 1)].map((n, i) => {
-            const max = sum / (length - i) * 2 // max 为平均随机，如果这次较小下次就较大，反之亦然
+            const max = sum / (length - i) * 2 // 剩余平均数的 2 倍
             const random = fix2(Math.random() * max)
             const res = Math.max(min, random)
             sum -= res
@@ -43,29 +42,32 @@ const wxrp = (sum, length, isRandom = true) => {
 // for (let i = 0; i < 1000; i++) wxrp(100, 10)
 // wxrp(1, 3, false)
 
+// 获取随机整数
 const getIntRandom = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
+// 获取随机数
 const getRandom = (min, max, digits) => (Math.random() * (max - min) + min).toFixed(digits) - 0
-// sum 总数，length 个数，min 最大值，max 最小值，digits 小数位数
-const random = (sum, length, min, max, digits) => {
+// 生成随机数列表
+const getRandomList = (sum, length, min, max, digits) => {
     const oSum = sum
     const power = 10 ** digits
-    const fix = n => (Math.floor(n * power) / power).toFixed(digits) - 0 // toFixed 四舍可以，五入会超出
-    const toFixed = n => n.toFixed(digits) - 0
+    const fix = n => (Math.floor(n * power) / power).toFixed(digits) - 0 // 只保留指定的小数位，生成随机数时使用
+    const toFixed = n => n.toFixed(digits) - 0 // 四舍五入保留小数位，处理余数时使用
 
-    if (sum / length < min) return console.warn(`总数 ${sum}，长度 ${length}，得平均值 ${sum / length}，小于最小值 ${min}`)
-    if (sum / length > max) return console.warn(`总数 ${sum}，长度 ${length}，得平均值 ${sum / length}，大于最大值 ${max}`)
+    const average = sum / length
+    if (average < min) return console.warn(`无法生成：总数 ${sum} / 长度 ${length} = 平均值 ${average}，小于最小值 ${min}`)
+    if (average > max) return console.warn(`无法生成：总数 ${sum} / 长度 ${length} = 平均值 ${average}，大于最大值 ${max}`)
 
     const array = [...Array(length - 1)].map((n, i) => {
-        const rmax = sum / (length - i) * 2 // 如何达到 balance ？
+        const rmax = sum / (length - i) * 2 // 剩余平均数的 2 倍
         const random = fix(Math.random() * rmax) 
         const res = Math.max(min, Math.min(random, max))
         sum -= res
         return res
     })
 
-    // 如果剩余的值超出范围，随机一个数进行随机补足，如果仍有剩余则继续补足
+    // 如果余数超出范围，随机一个数进行随机补足，如果仍有剩余则继续补足
     let remain = toFixed(sum)
-    // 剩余值小于最小值则前面减少，剩余值增加
+    // 余数小于最小值则前面减少，余数增加
     if (remain < min) {
         const less = () => {
             const index = getIntRandom(0, array.length - 1)
@@ -81,7 +83,7 @@ const random = (sum, length, min, max, digits) => {
         }
         less()
     }
-    // 剩余值大于最大值则前面增加，剩余值减少
+    // 余数大于最大值则前面增加，余数减少
     if (remain > max) {
         const add = () => {
             const index = getIntRandom(0, array.length - 1)
@@ -113,8 +115,8 @@ const length = 10 // 数组长度
 const min = 1 // 最小值
 const max = 20 // 最大值
 const digits = 2 // 小数位数
-random(sum, length, min, max, digits)
-// for (let i = 0; i < 100; i++) random(sum, length, min, max, digits)
+getRandomList(sum, length, min, max, digits)
+// for (let i = 0; i < 100; i++) getRandomList(sum, length, min, max, digits)
 </script>
 </body>
 </html>
